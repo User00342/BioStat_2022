@@ -41,3 +41,277 @@ plot_ly(
   color = ~ smoker
 )  
 ```
+
+
+## Задание 3
+
+```{r}
+plot <- ins_cost %>% 
+  filter(bmi != 0 & charges != 0) %>% 
+  ggplot(aes(x=bmi, y=charges, color = smoker)) + 
+  geom_point(size=2) +
+  theme_minimal()
+plot
+ggplotly(plot)
+```
+
+
+
+
+## Задание 4
+&nbsp;
+
+Получение объекта матрицы:
+```{r}
+
+ins_clear <- ins_cost %>% 
+  filter(charges != 0 & bmi != 0 & age != 0) %>% 
+  select(is.integer | is.numeric) 
+head(ins_clear)
+```
+
+
+
+Получение непосредсвтенно самой матрицы
+
+```{r}
+ins_cor <- cor(ins_clear)
+```
+
+
+Визуализируем её в corplot и corrr:
+```{r}
+corrplot(ins_cor, method = 'number')
+corrplot(ins_cor, method = 'square', diag = FALSE, order = 'hclust',
+         addrect = 3, rect.col = 'blue', rect.lwd = 3, tl.pos = 'd')
+corrplot(ins_cor, method = 'ellipse', order = 'AOE', type = 'upper')
+ins_cor %>% 
+  network_plot(min_cor = .0)
+ins_cor %>% rplot( colors = c("red", "green"))
+```
+
+
+
+## Задание 5
+
+
+
+```{r}
+ins_cost_d <- ins_cost %>% mutate(sex = as.integer(grepl(pattern = "female", sex)),
+                     smoker = as.integer(grepl(pattern = "yes", smoker)),
+                     southwest = as.integer(grepl(pattern = "southwest", region)),
+                     northwest = as.integer(grepl(pattern = "northwest", region)),
+                     northeast = as.integer(grepl(pattern = "northeast", region)),
+                     southeast = as.integer(grepl(pattern = "southeast", region)))
+
+
+ins_cost_numeric <- ins_cost_d[ , sapply(ins_cost_d, is.numeric)]
+
+
+
+```
+
+
+
+
+
+
+
+## Задание 6
+
+```{r}
+ins_cost_scaled <- scale(ins_cost_numeric)  #стандартизируем значения
+ins_cost_dist <- dist(ins_cost_scaled, method = "euclidean") #Создаём матрицу дистанций
+as.matrix(ins_cost_dist)[1:6,1:6]
+ins_cost_hc <- hclust(d = ins_cost_dist, 
+                        method = "ward.D2")  #Высчитываем дендрограмму кластеров
+fviz_dend(ins_cost_hc, 
+          cex = 0.1, 
+          k_colors = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+          color_labels_by_k = TRUE, 
+          rect = TRUE 
+          ) #визуализация
+
+
+
+```
+
+
+## Задание 7.1-7.2
+
+```{r}
+grp <- cutree(ins_cost_hc, k = 4)
+
+fviz_cluster(list(data = ins_cost_scaled, cluster = grp),
+             palette = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+             ellipse.type = "convex", # Concentration ellipse
+             repel = TRUE, # Avoid label overplotting (slow)
+             show.clust.cent = FALSE, ggtheme = theme_minimal()) 
+
+fviz_dend(ins_cost_hc, cex = 0.5, k = 4,
+          k_colors = "jco", type = "circular") 
+
+```
+
+
+
+
+## Задание 7.3
+
+
+```{r}
+hc1 <- hclust(ins_cost_dist, method = "average")
+hc2 <- hclust(ins_cost_dist, method = "ward.D2")
+# Create two dendrograms
+dend1 <- as.dendrogram (hc1)
+dend2 <- as.dendrogram (hc2)
+# Create a list to hold dendrograms
+dend_list <- dendlist(dend1, dend2)
+
+tanglegram(dend1, dend2)
+```
+
+
+
+
+
+## Задание 8
+
+
+
+
+```{r}
+pheatmap(ins_cost_scaled)
+```
+
+
+
+
+
+## Задание 9
+
+
+```{r}
+ins_cost_full.pca <- prcomp(ins_cost_numeric, 
+                        scale = T)
+summary(ins_cost_full.pca)
+```
+
+```{r}
+fviz_eig(ins_cost_full.pca, 
+         addlabels = T, 
+         ylim = c(0, 40))
+```
+
+У нас в данных первые 4 главные компоненты объясняют 61% вариации данных. Первые две компоненты объясняют 34% дисперсии. Это не очень хороший результат.
+
+
+```{r}
+fviz_pca_var(ins_cost_full.pca, col.var = "contrib") #посмотрим, как наши переменные связаны с PC1 и PC2.
+```
+
+
+По данной таблице мы уже можем сделать выводы, эффект каких переменных является наиболее выраженным.Также мы можем заметить, что наши переменные собираются в группы, две из которых являются противонаправленными, т.е. переменные отрицательно скоррелированы внутри представленных главных компонент.
+В данных мы видим четыре группы переменных:
+
+(@) smoker, charges
+
+(@) southeast, bmi
+
+(@) northeast, northwest 
+
+(@) остальные
+
+&nbsp;
+Посмотрим, из чего состоят наши 1, 2 и 3 компоненты:
+```{r}
+fviz_contrib(ins_cost_full.pca, choice = "var", axes = 1, top = 24) # 1
+fviz_contrib(ins_cost_full.pca, choice = "var", axes = 2, top = 24) # 2
+fviz_contrib(ins_cost_full.pca, choice = "var", axes = 3, top = 24) # 3
+```
+
+Как можно заметить, достаточно большой эффект имеют бинарные переменные. Charges и smoker больше всего определяют вариативность по первой главной компоненте. По второй - дамми southeast, а также bmi, northeast, по третьей - southwest.
+ 
+&nbsp;
+
+Нанесем на график наблюдения, разделим их на группы. Визуализируем полученные нами до этого момента данные.
+
+```{r}
+ggbiplot(ins_cost_full.pca, 
+         scale=0, 
+         groups = as.factor(ins_cost$smoker), 
+         ellipse = T,
+         alpha = 0.2) +
+  theme_minimal()
+```
+
+Выделенные области, очевидно, коррелирую с smoker и явно разделены на группы, хоть некоторые наблюдения и находятся вне областей.
+
+&nbsp;
+
+## Задание 10
+
+
+```{r}
+ins_cost <- ins_cost %>% 
+  mutate(
+    age_group = case_when(
+      age < 31 ~ "21-30",
+      age >= 31 & age < 41 ~ "31-40",
+      age >= 41 & age < 51 ~ "41-50",
+      age >= 51 & age < 61 ~ "51-60",
+      age >= 61 ~ "60+"
+    ))
+
+ggbiplot(ins_cost_full.pca, 
+         scale=0, 
+         groups = as.factor(ins_cost$age_group), 
+         ellipse = T,
+         alpha = 0.2) +
+  theme_minimal()
+```
+
+Данный график визуализирует, как и ожидалось, что age имеет не столь большой эффект. Наблюдения смешиваются и выходят за рамки выделенных областей.
+
+&nbsp;
+
+
+## Задание 11
+
+
+```{r}
+ins_cost <- ins_cost %>% 
+  mutate(
+    money = case_when(
+      charges < 10000 ~ "0",
+      charges >= 10000 & charges < 25000 ~ "1",
+      charges >= 25000 & age < 40000 ~ "2",
+      charges >= 40000 ~ "3"
+    ))
+
+ggbiplot(ins_cost_full.pca, 
+         scale=0, 
+         groups = as.factor(ins_cost$money), 
+         ellipse = T,
+         alpha = 0.2) +
+  theme_minimal()
+```
+
+
+
+
+```{r}
+ins_cost <- ins_cost %>% 
+  mutate(
+    northern_region = case_when(
+      region == "northwest" | region == "northeast" ~ "1",
+      region == "southwest" | region == "southeast" ~ "0"
+    ))
+
+ggbiplot(ins_cost_full.pca, 
+         scale=0, 
+         groups = as.factor(ins_cost$northern_region), 
+         ellipse = T,
+         alpha = 0.2) +
+  theme_minimal()
+```
