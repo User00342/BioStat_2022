@@ -2,7 +2,8 @@
 title: "HW2"
 author: "Маслова И"
 date: '30 октября 2022 г '
-output: html_document
+output: github_document
+always_allow_html: yes
 ---
 
 ```{r setup, include=FALSE}
