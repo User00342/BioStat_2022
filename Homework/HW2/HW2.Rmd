@@ -1,0 +1,43 @@
+---
+title: "HW2"
+author: "Маслова И"
+date: '30 октября 2022 г '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+## Задание 1. Загрузим данные и пакеты
+
+```{r}
+ins_cost <- read.csv('insurance_cost.csv')
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(plotly)
+library(corrplot)
+library(corrr)
+library(factoextra)
+library(dendextend)
+library(pheatmap)
+library(ggbiplot)
+library(FactoMineR)
+```
+
+
+
+
+
+## Задание 2
+
+
+```{r}
+plot_ly(
+  data = ins_cost[(ins_cost$bmi != 0) & (ins_cost$charges != 0),],
+  x = ~ bmi,
+  y = ~ charges,
+  color = ~ smoker
+)  
+```
