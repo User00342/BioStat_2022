@@ -1,0 +1,155 @@
+---
+title: "final"
+author: "Маслова И"
+date: '6 ноября 2022 г '
+output:
+  word_document
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(flextable)
+library(stringi)
+```
+
+# Задание 2
+
+Скачивание 
+
+```{r}
+data <- read_excel('data_excel.xlsx')
+```
+
+Замена пропущенных значений группы крови, замена запятых и имен переменных
+
+```{r}
+data[data == 'NA'] <- 'Нет данных' 
+
+data <- data %>% 
+  mutate(across(contains(c("E1", "E2")), function(x) as.numeric(scan(text=x, dec=",", sep="."))))
+
+data <- data %>% rename_with(function(x) x %>% stri_replace_all_regex(c("_E1", "_E2"), c("Визит1", "Визит2"), vectorize_all = FALSE))
+```
+
+
+
+
+Разделение на визиты
+
+
+
+```{r}
+data_E1 <- data %>% select(!ends_with("Визит2"))
+data_E2 <- data %>% select(!ends_with("Визит1"))
+
+```
+
+Статистика 
+
+```{r}
+statistics <- list( `Количество субъектов` = ~length(.x) %>% as.character(),
+                    `Количество (есть данные)` = ~sum(!is.na(.x)) %>% as.character(),
+                    `Нет данных` = ~sum(is.na(.x)) %>% as.character(),
+                    `Ср. знач.` = ~ifelse(sum(!is.na(.x)) == 0, "Н/П*", mean(.x, na.rm = TRUE) %>% round(2) %>% as.character()),
+                    `Станд. отклон.` = ~ifelse(sum(!is.na(.x)) < 3, "Н/П*", sd(.x, na.rm = TRUE) %>% round(2) %>% as.character()),
+      `95% ДИ для среднего` = ~sd(.x, na.rm = TRUE) %>% round(2) %>% as.character(),
+      `мин. - макс.` = ~ifelse(sum(!is.na(.x)) == 0, "Н/П*", paste0(min(.x, na.rm = TRUE) %>% round(2), " - ", max(.x, na.rm = TRUE) %>% round(2)) %>% as.character()),
+      `Медиана` = ~ifelse(sum(!is.na(.x)) == 0, "Н/П*", median(.x, na.rm = TRUE) %>% round(2) %>% as.character())
+                    
+                     )
+```
+
+
+Построение таблицы для первого визита
+
+```{r}
+data_E1 %>% 
+  select(`Группа`, where(is.numeric)) %>%
+  group_by(`Группа`) %>% 
+  summarise(across(where(is.numeric), statistics)) %>% 
+  pivot_longer(!`Группа`) %>%
+  separate(name, into = c("Переменная", "Статистика"), sep = "_") %>%
+  rename(`Значение` = value) %>%
+  flextable() %>%
+  theme_box() %>%
+  merge_v(c("Группа", "Переменная")) %>%
+  width(width=1.7)
+```
+
+
+
+
+Построение таблицы для второго визита
+
+
+```{r}
+data_E2 %>% 
+  select(`Группа`, where(is.numeric)) %>%
+  group_by(`Группа`) %>% 
+  summarise(across(where(is.numeric), statistics)) %>% 
+  pivot_longer(!`Группа`) %>%
+  separate(name, into = c("Переменная", "Статистика"), sep = "_") %>%
+  rename(`Значение` = value) %>%
+  flextable() %>%
+  theme_box() %>%
+  merge_v(c("Группа", "Переменная")) %>%
+  width(width=1.7)
+```
+
+Статистика не нумеречных переменных. Для двух визитов будет одинаковая.
+
+```{r}
+data %>% 
+  select(where(is.character)) %>%
+  count(`Группа`, `Пол`, `Группа крови`) %>%
+  group_by(`Группа`)  %>% 
+  rename(`Уникальные сочетания` = n) %>%
+  flextable() %>%
+  theme_box() %>%
+  merge_v(c("Группа", "Пол")) %>%
+  width(width=1.7)
+
+```
+
+
+
+# Задание 3
+
+Статистические тесты для первого визита и общих нумеречных переменных. Сравнение групп.
+
+```{r}
+p <- wilcox.test(pull(data %>% filter(`Группа` == "Группа 1") %>% select(`БазофилыВизит1`)), pull(data %>% filter(`Группа` == "Группа 2") %>% select(`БазофилыВизит1`)))$p.value
+p <- append(p, wilcox.test(pull(data %>% filter(`Группа` == "Группа 1") %>% select(`Возраст`)), pull(data %>% filter(`Группа` == "Группа 2") %>% select(`Возраст`)))$p.value)
+p <- append(p, wilcox.test(pull(data %>% filter(`Группа` == "Группа 1") %>% select(`Рост`)), pull(data %>% filter(`Группа` == "Группа 2") %>% select(`Рост`)))$p.value)
+p <- append(p, wilcox.test(pull(data %>% filter(`Группа` == "Группа 1") %>% select(`ЭозинофилыВизит1`)), pull(data %>% filter(`Группа` == "Группа 2") %>% select(`ЭозинофилыВизит1`)))$p.value)
+p <- append(p, wilcox.test(pull(data %>% filter(`Группа` == "Группа 1") %>% select(`ГемоглобинВизит1`)), pull(data %>% filter(`Группа` == "Группа 2") %>% select(`ГемоглобинВизит1`)))$p.value)
+p <- append(p, wilcox.test(pull(data %>% filter(`Группа` == "Группа 1") %>% select(`ЭритроцитыВизит1`)), pull(data %>% filter(`Группа` == "Группа 2") %>% select(`ЭритроцитыВизит1`)))$p.value)
+
+as.data.frame(p) %>% flextable() %>%  theme_box() %>% bg(`p` > 0.05, bg = 'orange')
+
+
+
+
+
+
+
+```
+
+
+Статистические тесты для второго визита. Сравнение групп.
+```{r}
+p <- wilcox.test(pull(data %>% filter(`Группа` == "Группа 1") %>% select(`ЭозинофилыВизит2`)), pull(data %>% filter(`Группа` == "Группа 2") %>% select(`ЭозинофилыВизит2`)))$p.value
+p <- append(p, wilcox.test(pull(data %>% filter(`Группа` == "Группа 1") %>% select(`ГемоглобинВизит2`)), pull(data %>% filter(`Группа` == "Группа 2") %>% select(`ГемоглобинВизит2`)))$p.value)
+p <- append(p, wilcox.test(pull(data %>% filter(`Группа` == "Группа 1") %>% select(`ЭритроцитыВизит2`)), pull(data %>% filter(`Группа` == "Группа 2") %>% select(`ЭритроцитыВизит2`)))$p.value)
+p <- append(p, wilcox.test(pull(data %>% filter(`Группа` == "Группа 1") %>% select(`БазофилыВизит2`)), pull(data %>% filter(`Группа` == "Группа 2") %>% select(`БазофилыВизит2`)))$p.value)
+
+as.data.frame(p) %>% flextable() %>%  theme_box() %>% bg(`p` > 0.05, bg = 'orange')
+
+```
+
+
