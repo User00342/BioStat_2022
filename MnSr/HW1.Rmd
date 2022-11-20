@@ -122,4 +122,4 @@ pool.sd = FALSE)$p.value < .05, na.rm = T)
 pool.sd = FALSE)$p.value < .05, na.rm = T) 
 
 ```
-Ложных открытий нет
+В нашем случае ложных открытий нет

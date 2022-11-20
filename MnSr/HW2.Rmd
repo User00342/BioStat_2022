@@ -1,0 +1,98 @@
+---
+title: "HA2"
+author: "Маслова И"
+date: "2022-11-20"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(multcomp)
+library(dplyr)
+```
+
+```{r}
+soccer_general <- read.csv("soccer.csv", sep=";")[, 2:6] %>% 
+    mutate(Position = as.factor(Position), 
+    Nationality = as.factor(Nationality), 
+    Age = as.numeric(Age), 
+    Height = as.numeric(Height)
+) %>% 
+filter(Nationality %in% c("Spanish", "Italian", "German", "English", "Argentinian")) 
+
+
+
+set.seed(1) 
+
+
+
+soccer_wrk <- soccer_general[sample(1:nrow(soccer_general), 150), ] %>% 
+    mutate(Nationality = factor(Nationality))
+```
+
+
+
+# Задание 1
+
+
+
+```{r}
+oneway.test(Height ~ Position, data = soccer_wrk)
+```
+
+Отвергаем нулевую гипотезу о равенстве роста футболистов с разных позиций. 
+
+# Задание 2
+
+
+
+```{r}
+m0 <- lm(Height ~ Position, data = soccer_wrk)
+HBW.comp <- m0 %>%  glht(linfct = mcp(Position = "Tukey"))
+HBW.comp %>% summary()
+HBW.comp %>% confint()
+HBW.comp %>% plot(xlab  = "Height difference (cm)")
+```
+
+Значимая разница есть между парами:
+
+* Goalkeeper - Defender
+
+* Midfielder - Defender
+
+* Goalkeeper - Forward
+
+* Midfielder - Goalkeeper
+
+
+
+# Задание 3
+
+Несмотря на то, что в ДИ и p.value в тестах этого и предыдущего задания есть некоторые различия, результат у нас получился одинаковый.
+
+
+# Задание 4
+
+
+```{r}
+soccer_wrk %>%
+  with(
+    boxplot(Height ~ Nationality, col = "cadetblue3", pch = 20,
+            ylab = "Height (cm)")
+  )
+```
+
+
+Уже сейчас визуально мы можем предположить, что связь между ростом футболиста и страной, за которую он играет, отсутствует.
+```{r}
+oneway.test(Height ~ Nationality, data = soccer_wrk)
+```
+```{r}
+m0 <- lm(Height ~ Nationality, data = soccer_wrk)
+HBW.comp <- m0 %>%  glht(linfct = mcp(Nationality = "Tukey"))
+HBW.comp %>% summary()
+HBW.comp %>% confint()
+HBW.comp %>% plot(xlab  = "Height difference (cm)")
+```
+
+Можем сделать выводы, что наши предположения при визуальной оценке оказались верными. Действительно, связь между ростом футболиста и страной, за которую он играет, отсутствует.
