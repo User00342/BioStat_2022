@@ -1,0 +1,125 @@
+---
+title: "HA1"
+author: "Маслова И"
+date: "2022-11-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(multcomp)
+library(dplyr)
+```
+
+```{r}
+soccer_general <- read.csv("soccer.csv", sep=";")[, 2:6] %>% 
+    mutate(Position = as.factor(Position), 
+    Nationality = as.factor(Nationality), 
+    Age = as.numeric(Age), 
+    Height = as.numeric(Height)
+) %>% 
+filter(Nationality %in% c("Spanish", "Italian", "German", "English", "Argentinian")) 
+
+
+
+set.seed(1) 
+
+
+
+soccer_wrk <- soccer_general[sample(1:nrow(soccer_general), 150), ] %>% 
+    mutate(Nationality = factor(Nationality))
+```
+
+
+
+```{r}
+
+PTest <- function(n) {
+  i <- 0
+  for (x in n) {
+  if (x < 0.05) {
+    i <- i + 1
+  } 
+  }
+  print("Открытий: ")
+  return(i)
+}
+
+```
+
+
+
+# Задание 1
+
+```{r}
+soccer_wrk %>%
+  with(
+    boxplot(Height ~ Position, col = "cadetblue3", pch = 20,
+            ylab = "Height (cm)")
+  )
+
+  
+D <- soccer_wrk %>% filter(Position == "Defender") %>% pull(Height)
+M <- soccer_wrk %>% filter(Position == "Midfielder") %>% pull(Height)
+F <- soccer_wrk %>% filter(Position == "Forward") %>% pull(Height)
+G <- soccer_wrk %>% filter(Position == "Goalkeeper") %>% pull(Height)
+
+t.test(D, F)$conf.int
+mean(D) - mean(F)
+t.test(D, G)$conf.int
+mean(D) - mean(G)
+t.test(D, M)$conf.int
+mean(D) - mean(M)
+t.test(G, F)$conf.int
+mean(G) - mean(F)
+t.test(F, M)$conf.int
+mean(F) - mean(M)
+t.test(M, G)$conf.int
+mean(M) - mean(G)
+
+```
+
+
+Тест с поправками Бонферрони
+
+
+```{r}
+t.test(D, F, conf.level = 0.975)$conf.int
+t.test(D, G, conf.level = 0.975)$conf.int
+t.test(D, M, conf.level = 0.975)$conf.int
+t.test(G, F, conf.level = 0.975)$conf.int
+t.test(F, M, conf.level = 0.975)$conf.int
+t.test(M, G, conf.level = 0.975)$conf.int
+```
+Интервалы покрывают реальную разницу между средним ростом
+
+
+# Задание 2
+
+
+```{r}
+
+DF <- t.test(D, F)$p.value
+DG <- t.test(D, G)$p.value
+DM <- t.test(D, M)$p.value
+GF <- t.test(G, F)$p.value
+FM <-  t.test(F, M)$p.value
+MG <-  t.test(M, G)$p.value
+p <- c(DF,DM,DG, GF, FM, MG)
+PTest(p)
+
+
+ print("Открытий с поправкой Холма:")
+ sum(pairwise.t.test(soccer_wrk$Height, soccer_wrk$Position,
+ p.adjust.method = "holm",
+pool.sd = FALSE)$p.value < .05, na.rm = T) 
+ 
+ print("Открытий с поправкой Бенджамини-Хохберга:")
+ 
+ sum(pairwise.t.test(soccer_wrk$Height, soccer_wrk$Position,
+ p.adjust.method = "BH",
+pool.sd = FALSE)$p.value < .05, na.rm = T) 
+
+```
+Ложных открытий нет
