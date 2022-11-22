@@ -1,0 +1,47 @@
+---
+title: "project"
+author: "Маслова И"
+date: "2022-11-22"
+output: word_document
+---
+
+# Подключаем библиотеки, читаем данные
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(Hmisc)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+```
+
+
+```{r}
+data <-  read.csv('CharityHospital_DATA_2022-11-02_1448_приложение к R.csv')
+```
+
+# Подсчитываем возраст
+
+```{r}
+data$date_bd <- ifelse(data$date_bd == '', NA, data$date_bd) # замена пустый ячеек на NA
+
+for (i in 1:length(data$date_bd)) {
+  if (is.na(data$date_bd[i]) == FALSE) {
+    date_1 <- as.Date(data$date_bd[i])
+    date_2 <- Sys.Date()
+    a = seq(from = date_1, to = date_2, by = 'year')
+    data$age_calc[i] <- length(a)-1
+  }
+}
+```
+
+
+# Назовем пропуски характеристиками
+
+```{r}
+
+data$redcap_repeat_instrument <-  ifelse(data$redcap_repeat_instrument == '', 'Характеристики', data$redcap_repeat_instrument)
+
+
+```
+
