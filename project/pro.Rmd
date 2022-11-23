@@ -12,12 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 library(Hmisc)
 library(dplyr)
 library(tidyr)
+library(readr)
 library(tidyverse)
 ```
 
 
 ```{r}
-data <-  read.csv('CharityHospital_DATA_2022-11-02_1448_приложение к R.csv')
+data <-  read.csv('CharityHospital_DATA_2022-11-02_1448_приложение к R.csv', fileEncoding= "utf-8")
 ```
 
 # Подсчитываем возраст
