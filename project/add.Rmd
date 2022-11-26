@@ -1,0 +1,545 @@
+---
+title: "add"
+author: "Маслова И"
+date: "2022-11-26"
+output: html_document
+---
+
+# Подключаем библиотеки, читаем данные
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(Hmisc)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(readr)
+library(tidyverse)
+library(xlsx)
+
+
+getwd()
+```
+
+```{r}
+data <-  read.csv('CharityHospital_DATA_2022-11-02_1448_приложение к R.csv', fileEncoding = "utf-8")
+
+data2 <- read.csv("CharityHospital_DATA_LABELS_2022-11-02_1446_labels.csv", encoding = "UTF-8")
+
+```
+
+
+# Для сводной таблицы
+
+
+
+```{r}
+listToDF <- function(x){
+  sapply(x, "length<-", max(lengths(x)))
+ }
+```
+
+
+
+# Построение сводной таблицы и что-то не получившееся
+```{r}
+DataTabble <- data %>% select(`record_id`, where(is.character)) %>% select( !c(contains('date')))
+DataTProba <- data %>% select(!where(is.integer))
+DataProba2 <- data %>% select(where(is.logical))
+DataProba2[ , 6]
+DataProba2$rowCounts <- rowSums(!is.na(DataProba2))
+DataProba2$rowCounts <- rowSums(DataProba2 != "", na.rm = TRUE)
+str(DataTProba)
+mydf <- Filter(function(x)!all(is.na(x)), mydf)
+```
+
+
+```{r} 
+DataTabble <- data %>% select(`record_id`, where(is.character)) %>% select( !c(contains('date')))
+write.csv(DataTabble, 'fail.csv')
+df <-  DataTabble[!apply(is.na(DataTabble) | DataTabble == "", 1, all),]
+
+
+
+
+data_frame_mod <- DataTabble %>% select(where(is.character)) %>% DataTabble[!apply(DataTabble == "", 1, all), ] 
+
+
+data_tabble_mod <- DataTabble %>% filter(!if_all(id_com:news_soc, is.na))
+
+df <- data_tabble_mod[rowSums(is.na(data_tabble_mod)) == 43,]
+
+df <-  DataTabble[!apply(is.na(DataTabble) | DataTabble == "", 1, all),]
+
+df <-  DataTabble[!apply(is.na(data) | data == "", 1, id_com:news_soc),]
+
+?apply
+
+
+
+
+```
+
+
+
+```{r}
+id_com <- ''
+DataTabble[DataTabble == ''] <- NA
+for (i in 1:length(DataTabble$id_com)) {
+  if (is.na(DataTabble$id_com[i]) == FALSE) {
+    id_com <- c(id_com, DataTabble$id_com[i])
+  }
+}
+
+
+
+tbi_com <- ''
+
+for (i in 1:length(DataTabble$tbi_com)) {
+  if (is.na(DataTabble$tbi_com[i]) == FALSE) {
+    tbi_com <- c(tbi_com, DataTabble$tbi_com[i])
+  }
+}
+
+str(DataTabble)
+
+cd4 <- ''
+DataTabble[DataTabble == ''] <- NA
+for (i in 1:length(DataTabble$cd4)) {
+  if (is.na(DataTabble$cd4[i]) == FALSE) {
+    cd4 <- c(cd4, DataTabble$cd4[i])
+  }
+}
+
+
+count_hiv <- ''
+DataTabble[DataTabble == ''] <- NA
+for (i in 1:length(DataTabble$count_hiv)) {
+  if (is.na(DataTabble$count_hiv[i]) == FALSE) {
+    count_hiv <- c(count_hiv, DataTabble$count_hiv[i])
+  }
+}
+
+
+
+infect_soc <- ''
+DataTabble[DataTabble == ''] <- NA
+for (i in 1:length(DataTabble$infect_soc)) {
+  if (is.na(DataTabble$infect_soc[i]) == FALSE) {
+    infect_soc <- c(infect_soc, DataTabble$infect_soc[i])
+  }
+}
+
+
+ch_ds_1 <- ''
+for (i in 1:length(DataTabble$ch_ds_1)) {
+  if (is.na(DataTabble$ch_ds_1[i]) == FALSE) {
+    ch_ds_1 <- c(ch_ds_1, DataTabble$ch_ds_1[i])
+  }
+}
+
+ch_ds_2 <- ''
+for (i in 1:length(DataTabble$ch_ds_2)) {
+  if (is.na(DataTabble$ch_ds_2[i]) == FALSE) {
+    ch_ds_2 <- c(ch_ds_2, DataTabble$ch_ds_2[i])
+  }
+}
+
+
+ch_ds_3 <- ''
+for (i in 1:length(DataTabble$ch_ds_3)) {
+  if (is.na(DataTabble$ch_ds_3[i]) == FALSE) {
+    ch_ds_3 <- c(ch_ds_3, DataTabble$ch_ds_3[i])
+  }
+}
+
+
+
+ch_ds_4 <- ''
+for (i in 1:length(DataTabble$ch_ds_4)) {
+  if (is.na(DataTabble$ch_ds_4[i]) == FALSE) {
+    ch_ds_4 <- c(ch_ds_4, DataTabble$ch_ds_4[i])
+  }
+}
+
+
+
+ch_ds_5 <- ''
+for (i in 1:length(DataTabble$ch_ds_5)) {
+  if (is.na(DataTabble$ch_ds_5[i]) == FALSE) {
+    ch_ds_5 <- c(ch_ds_5, DataTabble$ch_ds_5[i])
+  }
+}
+
+
+
+medic_status <- ''
+for (i in 1:length(DataTabble$medic_status)) {
+  if (is.na(DataTabble$medic_status[i]) == FALSE) {
+    medic_status <- c(medic_status, DataTabble$medic_status[i])
+  }
+}
+
+
+
+an_vitae <- ''
+for (i in 1:length(DataTabble$an_vitae)) {
+  if (is.na(DataTabble$an_vitae[i]) == FALSE) {
+    an_vitae <- c(an_vitae, DataTabble$an_vitae[i])
+  }
+}
+
+
+
+allergic <- ''
+for (i in 1:length(DataTabble$allergic)) {
+  if (is.na(DataTabble$allergic[i]) == FALSE) {
+    allergic <- c(allergic, DataTabble$allergic[i])
+  }
+}
+
+
+
+outreach_adress <- ''
+for (i in 1:length(DataTabble$outreach_adress)) {
+  if (is.na(DataTabble$outreach_adress[i]) == FALSE) {
+    outreach_adress <- c(outreach_adress, DataTabble$outreach_adress[i])
+  }
+}
+
+
+
+complaint <- ''
+for (i in 1:length(DataTabble$complaint)) {
+  if (is.na(DataTabble$complaint[i]) == FALSE) {
+    complaint <- c(complaint, DataTabble$complaint[i])
+  }
+}
+
+
+
+anamnes_morbi <- ''
+for (i in 1:length(DataTabble$anamnes_morbi)) {
+  if (is.na(DataTabble$anamnes_morbi[i]) == FALSE) {
+    anamnes_morbi <- c(anamnes_morbi, DataTabble$anamnes_morbi[i])
+  }
+}
+
+
+
+temp <- ''
+for (i in 1:length(DataTabble$temp)) {
+  if (is.na(DataTabble$temp[i]) == FALSE) {
+    temp <- c(temp, DataTabble$temp[i])
+  }
+}
+
+
+
+bp <- ''
+for (i in 1:length(DataTabble$bp)) {
+  if (is.na(DataTabble$bp[i]) == FALSE) {
+    bp <- c(bp, DataTabble$bp[i])
+  }
+}
+
+
+
+lung_rate <- ''
+for (i in 1:length(DataTabble$lung_rate)) {
+  if (is.na(DataTabble$lung_rate[i]) == FALSE) {
+    lung_rate <- c(lung_rate, DataTabble$lung_rate[i])
+  }
+}
+
+
+
+cor_rate <- ''
+for (i in 1:length(DataTabble$cor_rate)) {
+  if (is.na(DataTabble$cor_rate[i]) == FALSE) {
+    cor_rate <- c(cor_rate, DataTabble$cor_rate[i])
+  }
+}
+
+
+
+note <- ''
+for (i in 1:length(DataTabble$note)) {
+  if (is.na(DataTabble$note[i]) == FALSE) {
+    note <- c(note, DataTabble$note[i])
+  }
+}
+
+
+
+ds <- ''
+for (i in 1:length(DataTabble$ds)) {
+  if (is.na(DataTabble$ds[i]) == FALSE) {
+    ds <- c(ds, DataTabble$ds[i])
+  }
+}
+
+
+
+treat <- ''
+for (i in 1:length(DataTabble$treat)) {
+  if (is.na(DataTabble$treat[i]) == FALSE) {
+    treat <- c(treat, DataTabble$treat[i])
+  }
+}
+
+
+
+place <- ''
+for (i in 1:length(DataTabble$place)) {
+  if (is.na(DataTabble$place[i]) == FALSE) {
+    place <- c(place, DataTabble$place[i])
+  }
+}
+
+
+
+od_sph <- ''
+for (i in 1:length(DataTabble$od_sph)) {
+  if (is.na(DataTabble$od_sph[i]) == FALSE) {
+    od_sph <- c(od_sph, DataTabble$od_sph[i])
+  }
+}
+
+
+
+od <- ''
+for (i in 1:length(DataTabble$od)) {
+  if (is.na(DataTabble$od[i]) == FALSE) {
+    od <- c(od, DataTabble$od[i])
+  }
+}
+
+
+
+os <- ''
+for (i in 1:length(DataTabble$os)) {
+  if (is.na(DataTabble$os[i]) == FALSE) {
+    os <- c(os, DataTabble$os[i])
+  }
+}
+
+
+
+dp <- ''
+for (i in 1:length(DataTabble$dp)) {
+  if (is.na(DataTabble$dp[i]) == FALSE) {
+    dp <- c(dp, DataTabble$dp[i])
+  }
+}
+
+
+
+opht_od <- ''
+for (i in 1:length(DataTabble$opht_od)) {
+  if (is.na(DataTabble$opht_od[i]) == FALSE) {
+    opht_od <- c(opht_od, DataTabble$opht_od[i])
+  }
+}
+
+
+
+opht_os <- ''
+for (i in 1:length(DataTabble$opht_os)) {
+  if (is.na(DataTabble$opht_os[i]) == FALSE) {
+    opht_os <- c(opht_os, DataTabble$opht_os[i])
+  }
+}
+
+
+opht_recomend <- ''
+for (i in 1:length(DataTabble$opht_recomend)) {
+  if (is.na(DataTabble$opht_recomend[i]) == FALSE) {
+    opht_recomend <- c(opht_recomend, DataTabble$opht_recomend[i])
+  }
+}
+
+visus_rp <- ''
+for (i in 1:length(DataTabble$visus_rp)) {
+  if (is.na(DataTabble$visus_rp[i]) == FALSE) {
+    visus_rp <- c(visus_rp, DataTabble$visus_rp[i])
+  }
+}
+
+
+od_get <- ''
+for (i in 1:length(DataTabble$od_get)) {
+  if (is.na(DataTabble$od_get[i]) == FALSE) {
+    od_get <- c(od_get, DataTabble$od_get[i])
+  }
+}
+
+
+os_get <- ''
+for (i in 1:length(DataTabble$os_get)) {
+  if (is.na(DataTabble$os_get[i]) == FALSE) {
+    os_get <- c(os_get, DataTabble$os_get[i])
+  }
+}
+
+
+dp_get <- ''
+for (i in 1:length(DataTabble$dp_get)) {
+  if (is.na(DataTabble$dp_get[i]) == FALSE) {
+    dp_get <- c(dp_get, DataTabble$dp_get[i])
+  }
+}
+
+
+visus_com <- ''
+for (i in 1:length(DataTabble$visus_com)) {
+  if (is.na(DataTabble$visus_com[i]) == FALSE) {
+    visus_com <- c(visus_com, DataTabble$visus_com[i])
+  }
+}
+
+
+visus_com_2 <- ''
+for (i in 1:length(DataTabble$visus_com_2)) {
+  if (is.na(DataTabble$visus_com_2[i]) == FALSE) {
+    visus_com_2 <- c(visus_com_2, DataTabble$visus_com_2[i])
+  }
+}
+
+
+vaccination_com <- ''
+for (i in 1:length(DataTabble$vaccination_com)) {
+  if (is.na(DataTabble$vaccination_com[i]) == FALSE) {
+    vaccination_com <- c(vaccination_com, DataTabble$vaccination_com[i])
+  }
+}
+
+
+medical_record <- ''
+for (i in 1:length(DataTabble$medical_record)) {
+  if (is.na(DataTabble$medical_record[i]) == FALSE) {
+    medical_record <- c(medical_record, DataTabble$medical_record[i])
+  }
+}
+
+
+medical_record_com <- ''
+for (i in 1:length(DataTabble$medical_record_com)) {
+  if (is.na(DataTabble$medical_record_com[i]) == FALSE) {
+    medical_record_com <- c(medical_record_com, DataTabble$medical_record_com[i])
+  }
+}
+
+
+mls_data <- ''
+for (i in 1:length(DataTabble$mls_data)) {
+  if (is.na(DataTabble$mls_data[i]) == FALSE) {
+    mls_data <- c(mls_data, DataTabble$mls_data[i])
+  }
+}
+
+
+homeless_year <- ''
+for (i in 1:length(DataTabble$homeless_year)) {
+  if (is.na(DataTabble$homeless_year[i]) == FALSE) {
+    homeless_year <- c(homeless_year, DataTabble$homeless_year[i])
+  }
+}
+
+
+pregnant_com <- ''
+for (i in 1:length(DataTabble$pregnant_com)) {
+  if (is.na(DataTabble$pregnant_com[i]) == FALSE) {
+    pregnant_com <- c(pregnant_com, DataTabble$pregnant_com[i])
+  }
+}
+
+
+news_soc <- ''
+for (i in 1:length(DataTabble$news_soc)) {
+  if (is.na(DataTabble$news_soc[i]) == FALSE) {
+    news_soc <- c(news_soc, DataTabble$news_soc[i])
+  }
+}
+
+
+# spi <- list(id_com, tbi_com, cd4, count_hiv , infect_soc, ch_ds_1, ch_ds_2, ch_ds_3, ch_ds_4, ch_ds_5, medic_status, an_vitae, allergic, outreach_adress, complaint, anamnes_morbi, temp, bp, lung_rate, cor_rate, note, ds, treat, place, od_sph, od,  os, dp, opht_od, opht_os, opht_recomend, visus_rp, od_get, os_get, dp_get, visus_com, visus_com_2, vaccination_com, medical_record, medical_record_com, mls_data, homeless_year, pregnant_com, news_soc)
+
+
+# df <- data.frame(listToDF(spi))
+# names(df) <- c('id_com', 'tbi_com', 'cd4', 'count_hiv' , 'infect_soc', 'ch_ds_1', 'ch_ds_2', 'ch_ds_3', 'ch_ds_4', 'ch_ds_5', 'medic_status', 'an_vitae', 'allergic', 'outreach_adress', 'complaint', 'anamnes_morbi', 'temp', 'bp', 'lung_rate', 'cor_rate', 'note', 'ds', 'treat', 'place', 'od_sph', 'od',  'os', 'dp', 'opht_od', 'opht_os', 'opht_recomend', 'visus_rp', 'od_get','os_get', 'dp_get','visus_com', 'visus_com_2', 'vaccination_com', 'medical_record', 'medical_record_com', 'mls_data', 'homeless_year', 'pregnant_com', 'news_soc')
+
+spi <- list(id_com, tbi_com, cd4, count_hiv , infect_soc, ch_ds_1, ch_ds_2, ch_ds_3, ch_ds_4, ch_ds_5, medic_status, an_vitae, allergic, outreach_adress, complaint, anamnes_morbi, bp, note, ds, treat, place, od_sph, od,  os, dp, opht_od, opht_os, opht_recomend, visus_rp, visus_com, visus_com_2, vaccination_com, medical_record_com, pregnant_com, news_soc)
+
+df <- data.frame(listToDF(spi))
+
+names(df) <- c('id_com', 'tbi_com', 'cd4', 'count_hiv' , 'infect_soc', 'ch_ds_1', 'ch_ds_2', 'ch_ds_3', 'ch_ds_4', 'ch_ds_5', 'medic_status', 'an_vitae', 'allergic', 'outreach_adress', 'complaint', 'anamnes_morbi', 'bp', 'note', 'ds', 'treat', 'place', 'od_sph', 'od',  'os', 'dp', 'opht_od', 'opht_os', 'opht_recomend', 'visus_rp', 'visus_com', 'visus_com_2', 'vaccination_com', 'medical_record_com', 'pregnant_com', 'news_soc')
+
+
+
+str(df)
+write.xlsx(df, 'tabl.xlsx', col.names = TRUE)
+write.csv(df, 'tabl3.csv', fileEncoding= "CP1251")
+
+
+df %>% count(id_com) %>% write.csv('st/id_com.csv', fileEncoding= "CP1251")
+df %>% count(tbi_com) %>% write.csv('st/tbi_com.csv', fileEncoding= "CP1251")
+df %>% count(cd4) %>% write.csv('st/cd4.csv', fileEncoding= "CP1251")
+df %>% count(count_hiv) %>% write.csv('st/count_hiv.csv', fileEncoding= "CP1251")
+df %>% count(infect_soc) %>% write.csv('st/infect_soc.csv', fileEncoding= "CP1251")
+df %>% count(ch_ds_1) %>% write.csv('st/ch_ds_1.csv', fileEncoding= "CP1251")
+df %>% count(ch_ds_2) %>% write.csv('st/ch_ds_2.csv', fileEncoding= "CP1251")
+df %>% count(ch_ds_3) %>% write.csv('st/ch_ds_3.csv', fileEncoding= "CP1251")
+df %>% count(ch_ds_4) %>% write.csv('st/ch_ds_4.csv', fileEncoding= "CP1251")
+df %>% count(ch_ds_5) %>% write.csv('st/ch_ds_5.csv', fileEncoding= "CP1251")
+df %>% count(medic_status) %>% write.csv('st/medic_status.csv', fileEncoding= "CP1251")
+df %>% count(an_vitae) %>% write.csv('st/an_vitae.csv', fileEncoding= "CP1251")
+df %>% count(allergic) %>% write.csv('st/allergic.csv', fileEncoding= "CP1251")
+df %>% count(outreach_adress) %>% write.csv('st/outreach_adress.csv', fileEncoding= "CP1251")
+df %>% count(complaint) %>% write.csv('st/complaint.csv', fileEncoding= "CP1251")
+df %>% count(anamnes_morbi) %>% write.csv('st/anamnes_morbi.csv', fileEncoding= "CP1251")
+df %>% count(bp) %>% write.csv('st/bp.csv', fileEncoding= "CP1251")
+df %>% count(note) %>% write.csv('st/note.csv', fileEncoding= "CP1251")
+df %>% count(ds) %>% write.csv('st/ds.csv', fileEncoding= "CP1251")
+df %>% count(treat) %>% write.csv('st/treat.csv', fileEncoding= "CP1251")
+df %>% count(place) %>% write.csv('st/place.csv', fileEncoding= "CP1251")
+df %>% count(od_sph) %>% write.csv('st/od_sph.csv', fileEncoding= "CP1251")
+df %>% count(od) %>% write.csv('st/od.csv', fileEncoding= "CP1251")
+df %>% count(os) %>% write.csv('st/os.csv', fileEncoding= "CP1251")
+df %>% count(dp) %>% write.csv('st/dp.csv', fileEncoding= "CP1251")
+df %>% count(opht_od) %>% write.csv('st/opht_od.csv', fileEncoding= "CP1251")
+df %>% count(opht_os) %>% write.csv('st/opht_os.csv', fileEncoding= "CP1251")
+df %>% count(opht_recomend) %>% write.csv('st/opht_recomend.csv', fileEncoding= "CP1251")
+df %>% count(visus_rp) %>% write.csv('st/visus_rp.csv', fileEncoding= "CP1251")
+df %>% count(visus_com) %>% write.csv('st/visus_com.csv', fileEncoding= "CP1251")
+df %>% count(visus_com_2) %>% write.csv('st/visus_com_2.csv', fileEncoding= "CP1251")
+df %>% count(vaccination_com) %>% write.csv('st/vaccination_com.csv', fileEncoding= "CP1251")
+df %>% count(medical_record_com) %>% write.csv('st/medical_record_com.csv', fileEncoding= "CP1251")
+df %>% count(pregnant_com) %>% write.csv('st/pregnant_com.csv', fileEncoding= "CP1251")
+df %>% count(news_soc) %>% write.csv('st/news_soc.csv', fileEncoding= "CP1251")
+
+```
+
+
+
+
+
+
+# Проверка пустых столбцов
+
+
+```{r}
+DataProba2 <- data %>% select(where(is.logical))
+rowSums(!is.na(DataProba2))
+rowSums(DataProba2 != "", na.rm = TRUE)
+emptycols <- sapply(data, function (k) all(is.na(k)))
+emptycols <- colSums(is.na(data)) == nrow(data)
+data <- data[!emptycols]
+
+
+```
+
+
+
+
+

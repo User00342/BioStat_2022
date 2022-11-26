@@ -12,10 +12,15 @@ knitr::opts_chunk$set(echo = TRUE)
 library(Hmisc)
 library(dplyr)
 library(tidyr)
+library(tibble)
 library(readr)
 library(tidyverse)
+library(xlsx)
 ```
 
+
+
+# Загрузка данных с рекодировкой
 
 ```{r}
 data <-  read.csv('CharityHospital_DATA_2022-11-02_1448_приложение к R.csv', fileEncoding= "utf-8")
@@ -34,6 +39,7 @@ for (i in 1:length(data$date_bd)) {
     data$age_calc[i] <- length(a)-1
   }
 }
+
 ```
 
 
@@ -45,4 +51,36 @@ data$redcap_repeat_instrument <-  ifelse(data$redcap_repeat_instrument == '', '�
 
 
 ```
+
+
+
+# Переименуем столбцы, загрузим новый датасет
+
+```{r}
+
+data2 <- read.csv("CharityHospital_DATA_LABELS_2022-11-02_1446_labels.csv", encoding = "UTF-8")
+colnams <- colnames(data2)
+colnames(data) <- colnams
+data %>% write.csv('new_data', fileEncoding= "CP1251")
+
+getwd()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
