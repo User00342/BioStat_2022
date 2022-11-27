@@ -58,9 +58,10 @@ data$redcap_repeat_instrument <-  ifelse(data$redcap_repeat_instrument == '', 'Ð
 
 ```{r}
 
-data2 <- read.csv("CharityHospital_DATA_LABELS_2022-11-02_1446_labels.csv", encoding = "UTF-8")
+data2 <- read.csv("CharityHospital_DATA_LABELS_2022-11-02_1446_labels.csv", encoding = "UTF-8", check.names=FALSE)
 colnams <- colnames(data2)
 colnames(data) <- colnams
+
 data %>% write.csv('new_data.csv', fileEncoding= "CP1251")
 
 ```
