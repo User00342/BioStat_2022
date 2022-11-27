@@ -55,7 +55,7 @@ data$redcap_repeat_instrument <-  ifelse(data$redcap_repeat_instrument == '', '�
 
 
 # Переименуем столбцы, загрузим новый датасет
-
+ 
 ```{r}
 
 data2 <- read.csv("CharityHospital_DATA_LABELS_2022-11-02_1446_labels.csv", encoding = "UTF-8", check.names=FALSE)
