@@ -1,0 +1,202 @@
+---
+title: "project_biostat"
+output: html_document
+date: "2022-11-28"
+author: "BB"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(flextable)
+#install.packages("lubridate")
+library(lubridate)
+library(readxl)
+```
+
+#Reading data file
+
+```{r}
+data <- read.csv("CharityHospital_DATA_LABELS_2022-11-02_1446_labels.csv", encoding = "UTF-8") ### **encoding**
+
+bp <- read_excel("bp.xlsx")
+
+```
+
+
+# Даем значения первым приемам
+
+```{r}
+data$Repeat.Instrument <-  ifelse(data$Repeat.Instrument == '', 'Первый прием', data$Repeat.Instrument)
+```
+
+# Преобразование cd4 и вирусной нагрузки
+
+```{r}
+
+for (i in 1:length(data$Количество.CD4.клеток)) {
+  if (data$Количество.CD4.клеток[i] == "" | data$Количество.CD4.клеток[i] == "неизвестно" | data$Количество.CD4.клеток[i] == " -" | data$Количество.CD4.клеток[i] == "Впервые выявлен экспресс-тест 20.09.22") {
+    data$Количество.CD4.клеток[i] <- NA
+  } else if (data$Количество.CD4.клеток[i] == "24.91% 488.31 кл/мкл") {
+    data$Количество.CD4.клеток[i] <- "488"
+  }
+}
+data$Количество.CD4.клеток <- as.numeric(data$Количество.CD4.клеток)
+
+for (i in 1:length(data$Вирусная.нагрузка)) {
+  if (data$Вирусная.нагрузка[i] == "" | data$Вирусная.нагрузка[i] == "неизвестно" | data$Вирусная.нагрузка[i] == " -") {
+    data$Вирусная.нагрузка[i] <- NA
+  } 
+}
+data$Вирусная.нагрузка <- as.numeric(data$Вирусная.нагрузка)
+
+```
+# добавляем столбцы по давлению
+```{r}
+data$Систолическое <- NA
+data$диастолическое <- NA
+data$Давление.фактор <- NA
+
+for (i in 2:length(bp$систолическое)) {
+  for (n in 1:length(data$Давление.фактор)) {
+    if (data$Артериальное.давление..АД.[n] == bp$bp[i]) {
+      data$Систолическое[n] <- bp$систолическое[i]
+      data$диастолическое[n] <- bp$диастолическое[i]
+      data$Давление.фактор[n] <- bp$Давление[i]
+    }
+  }
+}
+
+```
+
+#converting character columns to factor except birthday column
+```{r}
+data <- data %>% 
+  mutate(across(c(!`Дата.рождения..ДД.ММ.ГГГГ.`, where(is.character)), function(x) as.factor(x))) %>% 
+  mutate(`Record.ID` = as.factor(`X.U.FEFF.Record.ID`))  %>% # ***
+  mutate(`Возраст` = as.numeric(`Возраст`)) %>% 
+ mutate(`Дата.рождения..ДД.ММ.ГГГГ.` = as.character(`Дата.рождения..ДД.ММ.ГГГГ.`)) 
+  data$X.U.FEFF.Record.ID <- NULL # ***
+  data$Комментарий.по.документам <- NULL
+  
+# %>% count(`Причины.бездомности..choice.Вынужденный.переселенец.`)
+
+
+```
+
+
+#Построение диаграммы, анализ посещений
+```{r}
+library(plotrix)
+fct_count(data$Repeat.Instrument)
+
+piepercent<- round(100*fct_count(data$Repeat.Instrument)$n/sum(fct_count(data$Repeat.Instrument)$n), 1)
+
+pie(fct_count(data$Repeat.Instrument)$n, labels = piepercent, init.angle = -15, main = "Цель посещения",col = rainbow(length(fct_count(data$Repeat.Instrument)$n)))
+legend("topright", c("Вакцинация","Для женщин", "Основной прием", "Оценка зрения", "Соц.сопровождение", "Фотобаза", "Первый прием", "Экспресс-тест-е" ), cex = 0.8,
+   fill = rainbow(length(fct_count(data$Repeat.Instrument)$n)))
+
+
+
+tab3 <- data %>% 
+  select(`Repeat.Instrument`, `Record.ID`) %>%
+  group_by(`Record.ID`) %>%
+  count(`Repeat.Instrument`, `Record.ID`) 
+
+
+
+median(tab3$n[tab3$Repeat.Instrument == "ОСНОВНОЙ прием"], na.rm = TRUE)
+mean(tab3$n[tab3$Repeat.Instrument == "ОСНОВНОЙ прием"], na.rm = TRUE)
+max(tab3$n[tab3$Repeat.Instrument == "ОСНОВНОЙ прием"], na.rm = TRUE)
+median(tab3$n[tab3$Repeat.Instrument == "Фотобаза (раны, сыпи, выписки, документы)"], na.rm = TRUE)
+median(tab3$n[tab3$Repeat.Instrument == "Вакцинация"], na.rm = TRUE)
+median(tab3$n[tab3$Repeat.Instrument == "Для бездомных женщин"], na.rm = TRUE)
+median(tab3$n[tab3$Repeat.Instrument == "Оценка зрения"], na.rm = TRUE)
+median(tab3$n[tab3$Repeat.Instrument == "Экспресс-тестирование"], na.rm = TRUE)
+median(tab3$n[tab3$Repeat.Instrument == "Социальное сопровождение"], na.rm = TRUE)
+
+```
+
+
+
+
+#Take unique patients and filled columns 
+```{r}
+data <- data %>% 
+  filter(data$Repeat.Instrument == "Первый прием") %>%
+  select_if(~!(all(is.na(.)) | all(. == "")))
+```
+
+#function for age determining
+```{r}
+age <- function(dob, age.day = today(), units = "years", floor = TRUE) {
+    calc.age = interval(dob, age.day) / duration(num = 1, units = units)
+    if (floor) return(as.integer(floor(calc.age)))
+    return(calc.age)
+}
+```
+
+#mutating age column
+```{r}
+data <- data %>% 
+  mutate(`Возраст` = age(`Дата.рождения..ДД.ММ.ГГГГ.`))  
+```
+
+
+#
+```{r}
+#data %>% colnames() %>% if_any(across(str_detect(., "Мобильный")), function(x) x == "TRUE")
+```
+
+#checking factor levels
+```{r}
+#data %>% 
+ # select(`Причины.бездомности..choice.Выселение.из.служебного.жилья.`) %>% 
+#  pull()
+# levels(data$Причины.бездомности..choice.Выселение.из.служебного.жилья.)
+#colnames(data)
+```
+
+
+```{r}
+#data %>% 
+#  dplyr::select(contains("бездомности")) %>%
+#  map(table)
+```
+
+
+
+
+
+# Факторный анализ
+
+
+```{r}  
+d <- data %>% select(where(is.factor)) %>% select(!contains(c('Record.ID', 'Дата', "Причины", "Complete", "What.", "Do.you.eat.any.of.the.", "Where.", "How.do.you", "Do.you.", "Services", "С.какого", "In.the.past.year.","Communicable.Languages.", "Check.if.this.person.", "Have.you.")))
+name <- colnames(d)[1]
+tab2 <- fct_count(d[,1]) %>% add_column(`Переменная` = name)
+for (i in 2:length(colnames(d))) {
+  name <- colnames(d)[i]
+  tab1 <- fct_count(d[,i]) %>% add_column(`Переменная` = name)
+  tab2 <- tab1 %>% bind_rows(tab2)
+}
+
+tab2 %>%
+  select(`Переменная`, `Значение` = `f`, `Уникальные сочетания` = `n`) %>%
+  group_by(`Переменная`) %>%
+  flextable()  %>%
+  theme_box() %>%
+  merge_v(c("Переменная")) %>%
+  width(width=1.7)
+
+
+```
+
+
+
+
+
+
+
