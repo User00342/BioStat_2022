@@ -1,0 +1,146 @@
+---
+title: "Дз регрессия"
+author: "Маслова И"
+date: "2022-12-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+library(dplyr)
+library(mvtnorm)
+library(glmnet)
+library(readxl)
+library(coefplot)
+
+```
+
+# Задание 1
+## Часть 1
+
+```{r}
+pr <- rmvnorm(n=100, mean = c(85.5, 5.4), sigma = matrix(c(13.25, 2.63, 2.63, 1.45), ncol = 2))
+pr <- as.data.frame(pr)
+cov2cor(matrix(c(13.25, 2.63, 2.63, 1.45), ncol = 2))
+```
+
+```{r}
+
+summary(lm(pr$V1 ~ pr$V2))
+```
+(Проверка зависимости коэффициента корреляции)
+
+```{r}
+pr2 <- rmvnorm(n=100, mean = c(85.5, 5.4), sigma = matrix(c(13.25, 0.1, 0.1, 1.45), ncol = 2))
+pr2 <- as.data.frame(pr2)
+cor(pr2$V1, pr2$V2)
+```
+
+
+```{r}
+summary(lm(pr2$V1 ~ pr2$V2))
+```
+
+
+Полученные нами оценки связаны с выборочными характеристиками. Мат ожидание в наибольшей степени влияет на оценку параметра b (Intercept). Увеличение дисперсии - дает более широкий разброс значений получаемым нами оценкам. Коэффициент корреляции - в основном влияет на оценку параметра a. 
+
+
+
+
+## Часть 2
+
+```{r}
+plot(lm(pr$V1 ~ pr$V2))
+
+```
+```{r}
+f <- lm(pr$V1 ~ pr$V2)
+res1 <- residuals(f,type="response")
+shapiro.test(res1)
+```
+
+Основываясь на полученных результатах (p-value, график) можно сделать вывод, что остатки распределены нормально.
+
+## Часть 3
+
+```{r}
+pr$V3 <- runif(100, min = 0, max = 100)
+summary(lm(pr$V1 ~ pr$V2 + pr$V3))
+```
+Коэф детерминации и модефицированный коэф детерминации меняют свои значения на сотые доли в зависимости от добавленных значений.  
+
+
+
+# Задание 2
+## Часть 1
+
+```{r}
+n <- 100
+x1 <- rnorm(n, mean = 0.3)
+x2 <- x1 * (1+runif(n, min = 0, max = 0.005))
+x3 <- x1 + x2 * +rnorm(n, sd= 0.3) 
+x4 <- x3 *(1+ runif(n, min = 0, max = 0.002))
+x5 <- x4 - x1 *(1+ runif(n, min = 0, max = 0.2))
+y <- x1 + 5*x2 +3*x3 - 8*x4 + 2* x5 + rnorm(n, sd=1)
+
+summary(lm(y~x1+x2+x3+x4 +x5))
+```
+```{r}
+X <- matrix(c(x1, x2, x3, x4, x5), ncol = 5)
+la.eq <- glmnet(X,y, family = 'gaussian', intercept = F, alpha = 1)
+matplot(log(la.eq$lambda), t(la.eq$beta), type = 'l', main='Lasso', lwd=2)
+
+
+
+la.eq <- glmnet(X,y, family = 'gaussian', intercept = F, alpha = 1, , lambda = 0.2)
+predict(la.eq, X, type = "coefficients")
+
+
+```
+Коэффициенты сильно изменились. Пятый коэффициент принимает отрицательные значения; Intercept, третий и четвертый - обнулиись; первый и второй - сильно приблизились к нулю. 
+
+
+## Часть 2
+Активная клеточная масса, костная масса и вес являются сильно коррелирующими переменными( коэф корреляции принимает значение +- 0.9). Первый столбец в нашем примере соответствует значениям активной клеточной массы в килограммах, второй - костной массе в килограммах, третий - вес в килограммах. 
+
+```{r}
+dop <- rmvnorm(n=100, mean = c(24.3, 3.3), sigma = matrix(c(5, 1.7, 1.7, 0.7), ncol = 2))
+dop <- as.data.frame(dop)
+dop$ves <- 2*dop$V1 + 10*dop$V2  +rnorm(n, mean = 5, sd = 5) 
+cov2cor(matrix(c(5, 1.7, 1.7, 0.7), ncol = 2))
+```
+```{r}
+cor(dop$ves, dop$V2)
+cor(dop$ves, dop$V1)
+```
+Посмотрим полученные коэффициенты:
+```{r}
+summary(lm(ves ~ V1 + V2, dop))
+```
+
+
+
+# Задание 3
+
+```{r}
+Sep <- data.frame(Neu = rnorm(201, mean = 80, sd = 5) %>% round(0), Ly = rnorm(201, mean = 20, sd = 5)%>%round(0))
+Sep$p <- ifelse(Sep$Neu/Sep$Ly < 3, 0, (Sep$Neu/Sep$Ly - 3)/6 )
+Sep$p <- ifelse(Sep$Neu/Sep$Ly > 9, 1, Sep$p ) %>% round(2)
+```
+
+```{r}
+mod <- glm(p ~ Neu + Ly, Sep, family = gaussian)
+summary(glm(p ~ Neu + Ly, Sep, family = gaussian))
+```
+
+
+```{r}
+var <- data.frame(Neu = 90, Ly = 15)
+predict(mod, var)
+```
+При подсчете вероятности вручную при показателях Neu = 90, Ly = 15:
+p = 0.5
+Наша модель предсказывает вероятность близкую к данной:
+p = 0.48 (при округлении)
