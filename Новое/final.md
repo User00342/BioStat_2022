@@ -54,19 +54,19 @@ One of the objectives of our project is to draw up a universal portrait of a hom
 
 ![](final_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->![](final_files/figure-gfm/unnamed-chunk-23-2.png)<!-- -->
 
-# Visual acuity analysis 
+# Анализ зрения
 
 
-Data on the visual acuity of the 111 homeless patients were also analyzed. 74% had farsightedness. The most demanded glasses are 2.5 diopters.
+Также были проанализированы данные по остроте зрения бездомных. Исследование зрения было проведено 111 пациентам. У 74% из них выявлена дальнозоркость. Наиболее востребованы стали очки на 2,5 диоптрий, поэтому их в филиалах “Благотворительной больницы” мы советуем держать про запас.
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](final_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 # HIV
-Нами был проведен анализ ВИЧ-инфицированных.
+Нами был проведен анализ ВИЧ-инфицированных на поиск ассоциированных предикторов заболевания.
 Среди всех пациентов, состоящих в базе данных, больными ВИЧ-инфекцией оказались 87 человек. Из них - 53 состоят на учёте. 
-С каждым годом шанс заболеть ВИЧ снижается в 0,94 раза, относительно предыдущего года. Мужской пол также снижает шанс в 0,3 раза. При этом наличие диагностированного гепатита С повышает шанс в 3 раза, а гепатит В - в 5 раз.
+В ходе регрессионного анализа мы обнаружили статистически значимые закономерности наличия ВИЧ-инфекции от различных факторов. Так, с каждым годом шанс заболеть ВИЧ снижается в 0,94 раза, относительно предыдущего года. Мужской пол также снижает такой шанс в 0,3 раза. При этом наличие диагностированного гепатита С повышает шанс иметь ВИЧ-инфекцию в 3 раза, а гепатит В - в 5 раз, что подтверждает литературные данные о взаимосвязи этих заболеваний (). 
 
 ![](final_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
@@ -74,7 +74,7 @@ Data on the visual acuity of the 111 homeless patients were also analyzed. 74% h
 
 # Hepatitis C
 
-A similar analysis was carried out for Hepatitis C. It was found that every year the chance of infection with hepatitis C decreases by 0.96 times compared to the previous year. Gender in this case does not play a significant role, p-value>0.05. At the same time, the presence of HIV infection increases the chance by 3 times, and hepatitis B by 10 times.
+Аналогичный регрессионный анализ был проведен для поиска ассоциаций с Гепатитом С. Было выяснено, что с каждым годом шанс инфицирования гепатитом С снижается в 0,96 раза, относительно предыдущего года. Пол в данном случае не играет существенной роли, p-value>0,05. При этом наличие ВИЧ-инфекции повышает шанс в 3 раза, а гепатита В - в 10 раз.
 
 # Cramer\`s V
 
