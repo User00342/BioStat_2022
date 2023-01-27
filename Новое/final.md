@@ -64,9 +64,7 @@ One of the objectives of our project is to draw up a universal portrait of a hom
 ![](final_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 # HIV
-Нами был проведен анализ ВИЧ-инфицированных на поиск ассоциированных предикторов заболевания.
-Среди всех пациентов, состоящих в базе данных, больными ВИЧ-инфекцией оказались 87 человек. Из них - 53 состоят на учёте. 
-В ходе регрессионного анализа мы обнаружили статистически значимые закономерности наличия ВИЧ-инфекции от различных факторов. Так, с каждым годом шанс заболеть ВИЧ снижается в 0,94 раза, относительно предыдущего года. Мужской пол также снижает такой шанс в 0,3 раза. При этом наличие диагностированного гепатита С повышает шанс иметь ВИЧ-инфекцию в 3 раза, а гепатит В - в 5 раз, что подтверждает литературные данные о взаимосвязи этих заболеваний (). 
+We conducted an analysis of HIV-infected people. Among all patients included in the database, 87 people were infected with HIV. Of these, 53 are registered. Every year the chance of contracting HIV decreases by 0.94 times compared to the previous year. The male gender also reduces the chance to be infected by 0.3 times. The presence of diagnosed hepatitis C increases the chance by 3 times, and hepatitis B - by 5 times. 
 
 ![](final_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
