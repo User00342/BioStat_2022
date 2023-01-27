@@ -195,3 +195,10 @@ However, in the picture or when constructing the table, we can see that, apparen
     
 ## Literature
 1. Mohsen AH, Easterbrook P, Taylor CB, Norris S. Hepatitis C and HIV-1 coinfection. Gut. 2002 Oct;51(4):601-8. doi: 10.1136/gut.51.4.601. PMID: 12235089; PMCID: PMC1773386.
+2. https://tsamsonov.github.io/r-geo-course/index.html
+3. http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
+4. https://r-graph-gallery.com/index.html
+5. https://habr.com/ru/post/469215/
+6. https://stackoverflow.com/questions/37506934/calculations-with-minutes-and-seconds-in-r
+7. https://medstatistic.ru/articles/analiz_dannyh.pdf
+
