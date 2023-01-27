@@ -1,17 +1,13 @@
 конечный
 ================
-Маслова И
-2023-01-26
+Authors: 
+I. Maslova
+I. Tsepeleva
+A. Bydanov
+P. Pchelintseva
+E.Tomilov
 
-    ## New names:
-    ## New names:
-    ## New names:
-    ## New names:
-    ## New names:
-    ## New names:
-    ## New names:
-    ## New names:
-    ## * `` -> `...1`
+# Introduction
 
 Charity hospital is a non-profit organization that provides medical and
 social assistance to homeless people in Saint Petersburg. Volunteer
@@ -22,10 +18,15 @@ of this study was to analyze the patient database of the Charity
 hospital which contains information about 1633 unique patients and 4427
 visits.
 
-Objectives: 1. to prepare data for the analysis 2. to create the report
-with descriptive statistics 3. to create a universal portrait of the
-homeless person 4. to find relationship between place of appointment and
-other variables 5. to analyze HIV-positive population distinctly 6. to
+# Objectives: 
+1. to prepare data for the analysis 
+2. 2. to create the report
+with descriptive statistics 
+3. to create a universal portrait of the
+homeless person 
+4. to find relationship between place of appointment and
+other variables 
+5. to analyze HIV-positive population distinctly 6. to
 search for indicators on which the call to the ambulance depends
 
 \#Descriptive statistics and a universal portrait of the homeless person
