@@ -40,7 +40,7 @@ In case of normality violation the Kruskal-Wallis test was performed. Dunn's tes
 The strength of the relationship between the two nominal variables was assessed using Cramer's criterion (Cramer's V).
 
 Regression analysis was performed using lm and glm functions. 
-The data were visualized using ggplot, plotly package. 
+The data was visualized using ggplot, plotly package. 
 
 # Descriptive statistics and a universal portrait of the homeless person
 Visit analysis.
