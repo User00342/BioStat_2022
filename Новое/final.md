@@ -30,18 +30,18 @@ other variables
 6. to search for indicators on which the call to the ambulance depends
 
 # Descriptive statistics and a universal portrait of the homeless person
-Анализ посещений
-Нам были предоставлены данные по 1633 уникальным пациентам. У пациентов были следующие цели посещения:
-1. первый прием (для всех обязательный)
-2. основной прием 
-3. вакцинация
-4. для бездомных женщин
-5. оценка зрения
-6. социальное сопровождение
-7. фотобаза (раны, сыпи, выписки, документы)
-8. экспресс-тестирование
+Visit analysis.
+We were provided with data on 1633 unique patients. Patients had the following goals for the visit:
+-first appointment (mandatory for all)
+-main appointment
+-vaccination
+-for homeless women 
+-vision assessment
+-social support
+-photobase (wounds, rashes, extracts, documents)
+-express testing
+The mode for each of the categories was equal to one (most often, patients for any purpose came only once). Some patients had a large number of visits for the same purpose. Thus, the maximum number of main appointments for one person was 35, muximum number of the reception for the photobase - 18. The other categories did not have such high rates.
 
-При выделении моды значение для каждой из категорий было равно единице (чаще всего пациенты с какой-либо целью приходили только один раз). У некоторых пациентов наблюдалось большое количество посещений с одной целью. Так, одним пациентом основной прием был посещен максимально 35 раз, прием для фотобазы - 18. У остальных категорий настолько же высоких показателей не наблюдалось.
 
 ![](final_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
