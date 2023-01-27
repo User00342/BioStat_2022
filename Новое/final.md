@@ -169,6 +169,9 @@ the following variables: complaints, edema (anasarca), vomiting
 
 ![](final_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
+Наибольший поток во всех пунктах приема наблюдался в летнее время. Исключение - МС. 
+
+
 ![](final_files/figure-gfm/unnamed-chunk-51-1.png)<!-- -->
 
 анализ времемни
