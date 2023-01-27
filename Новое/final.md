@@ -91,15 +91,15 @@ the following variables: complaints, edema (anasarca), vomiting
 
 
 
-# Место приема
+# Reception place
 
-Для последующего анализа нами были выделены несколько мест приема с наибольшей посещаемостью, между которыми были обнаружены некоторые различия.
+For further analysis, we identified several places of reception with the highest attendance, between which some differences were found.
 
-Наиболее выделяющееся по ряду показателей место приёма было обозначено как МС.
+The place of reception that stands out most in terms of a number of indicators was designated as MS.
 
-На графиках ниже продемонстрированы показатели систолического и диастолического давления. Значимые различия систолического давления оказались между пунктами приема МС и НП, диастолического - между МС и всеми другими пунктами приема.
+The graphs below show systolic and diastolic blood pressure readings. Significant differences in systolic pressure were between the points of reception of MS and NP, diastolic - between MS and all other points of reception.
 
-## Давление систолическое
+## Systolic pressure
 
 
 
@@ -131,7 +131,7 @@ the following variables: complaints, edema (anasarca), vomiting
 
 ![](final_files/figure-gfm/unnamed-chunk-58-1.png)<!-- -->
 
-## Диастолическое:
+## Diastolic pressure:
 
     ## # A tibble: 5 x 2
     ##   Место.приема      диастолическое
@@ -165,22 +165,22 @@ the following variables: complaints, edema (anasarca), vomiting
 
 
 
+Most of the MS visitors are residents of permanent homeless shelters (278 out of 293 visitors), and most visitors of NP are residents of low-threshold homeless shelters (night with heating points - 276 out of 337 visitors).
 
-Большая часть посетителей МС - жители постоянных приютов для бездомных (круглосуточные - 278 из 293 посетителей), а НП - низкопороговых приютов для бездомных (ночные с пунктами обогрева - 276 из 337 посетителей).
 
 
 ![](final_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
-Наибольший поток во всех пунктах приема наблюдался в летнее время. Исключение - МС. 
+The largest flow at all reception points was observed in the summer except for MS.
 
 
 ![](final_files/figure-gfm/unnamed-chunk-51-1.png)<!-- -->
 
-Наибольшая нагрузка на места приема в общем наблюдалась в вечернее время (20:00-22:00). 
+The greatest load on reception places was generally observed in the evening (8-10 pm). 
 
 ![](final_files/figure-gfm/unnamed-chunk-53-1.png)<!-- -->
 
-Однако, на графике и/или при построении таблицы мы можем увидеть, что, судя по всему, поликлиники вели прием в разное время, вероятно, поочередно. Опять же, за исключением МС. 
+However, in the picture or when constructing the table, we can see that, apparently, the receptions were available at different times, probably alternately. Again, with the exception of MS.
 
 ![](final_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
 
