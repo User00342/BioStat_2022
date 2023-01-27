@@ -187,4 +187,5 @@ the following variables: complaints, edema (anasarca), vomiting
     ##   12    35    152   115   157   162    59    27   102   121    98   350   247    55    14   
  
     
-
+## Literature
+1. Mohsen AH, Easterbrook P, Taylor CB, Norris S. Hepatitis C and HIV-1 coinfection. Gut. 2002 Oct;51(4):601-8. doi: 10.1136/gut.51.4.601. PMID: 12235089; PMCID: PMC1773386.
