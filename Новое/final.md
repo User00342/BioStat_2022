@@ -64,7 +64,8 @@ Data on the visual acuity of the 111 homeless patients were also analyzed. 74% h
 ![](final_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 # HIV
-We conducted an analysis of HIV-infected people. Among all patients included in the database, 87 people were infected with HIV. Of these, 53 are registered. Every year the chance of contracting HIV decreases by 0.94 times compared to the previous year. The male gender also reduces the chance to be infected by 0.3 times. The presence of diagnosed hepatitis C increases the chance by 3 times, and hepatitis B - by 5 times. 
+We conducted an analysis of HIV-infected people to investigate the assosiation with this infection and another factors. Among all patients included in the database, 87 people were infected with HIV. Of these, 53 are registered. Performing regression analysis we revealed statistically significant correlation with HIV infection and some predictors. For instance, every year the chance of contracting HIV decreases by 0.94 times compared to the previous year. The male gender also reduces the chance to be infected by 0.3 times. The presence of diagnosed hepatitis C increases the chance by 3 times, and hepatitis B - by 5 times which is fully consistent with 
+literature data (Mohsen A. et al., 2002). 
 
 ![](final_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
@@ -73,6 +74,7 @@ We conducted an analysis of HIV-infected people. Among all patients included in 
 # Hepatitis C
 
  A similar regression analysis was carried out to search for associations with Hepatitis C. It was found that every year the chance of infection with hepatitis C decreases by 0.96 times, relative to the previous year. Gender in this case does not play a significant role, p-value>0.05. At the same time, the presence of HIV infection increases the chance to be infected by 3 times, and hepatitis B by 10 times.
+
 # Cramer\`s V
 
 To search for indicators on which the call to the emergency medical
