@@ -40,7 +40,7 @@ We were provided with data on 1633 unique patients. Patients had the following g
 -social support
 -photobase (wounds, rashes, extracts, documents)
 -express testing
-The mode for each of the categories was equal to one (most often, patients for any purpose came only once). Some patients had a large number of visits for the same purpose. Thus, the maximum number of main appointments for one person was 35, muximum number of the reception for the photobase - 18. The other categories did not have such high rates.
+The mode for each of the categories was equal to one (most often, patients for any purpose came only once). Some patients had a large number of visits for the same purpose. Thus, the maximum number of main appointments for one person was 35, maximum number of the reception for the photobase - 18. The other categories did not have such high rates.
 
 
 ![](final_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
