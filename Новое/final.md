@@ -26,8 +26,8 @@ with descriptive statistics
 homeless person 
 4. to find relationship between place of appointment and
 other variables 
-5. to analyze HIV-positive population distinctly 6. to
-search for indicators on which the call to the ambulance depends
+5. to analyze HIV-positive population distinctly 
+6. to search for indicators on which the call to the ambulance depends
 
 # Descriptive statistics and a universal portrait of the homeless person
 Анализ посещений
