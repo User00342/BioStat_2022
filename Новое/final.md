@@ -54,10 +54,10 @@ One of the objectives of our project is to draw up a universal portrait of a hom
 
 ![](final_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->![](final_files/figure-gfm/unnamed-chunk-23-2.png)<!-- -->
 
-# Анализ зрения
+# Visual acuity analysis
 
 
-Также были проанализированы данные по остроте зрения бездомных. Исследование зрения было проведено 111 пациентам. У 74% из них выявлена дальнозоркость. Наиболее востребованы стали очки на 2,5 диоптрий, поэтому их в филиалах “Благотворительной больницы” мы советуем держать про запас.
+Data on the visual acuity of the 111 homeless patients were also analyzed. 74% had farsightedness. The most demanded glasses are 2.5 diopters.
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
