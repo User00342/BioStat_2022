@@ -536,6 +536,9 @@ emptycols <- sapply(data, function (k) all(is.na(k)))
 emptycols <- colSums(is.na(data)) == nrow(data)
 data <- data[!emptycols]
 
+data.frame(colnames(DataProba2)) %>% write.csv('names2.csv', fileEncoding= "CP1251")
+DataProba2 %>% write.csv(' Пустое2.csv ' , fileEncoding= "CP1251")
+
 
 ```
 

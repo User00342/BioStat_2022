@@ -1,0 +1,1245 @@
+---
+title: "конечный"
+author: "Маслова И"
+date: "2023-01-26"
+output:
+  word_document: default
+  html_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, error = FALSE, warning = FALSE)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(flextable)
+#install.packages("ltm")
+library(lubridate)
+library(rstatix)
+library(readxl)
+library(vcd)
+library(rcompanion)
+library(ltm)
+library(ggpubr)
+library(plotrix)
+library("plotly")
+library(forcats)
+library(tibble)
+library(magrittr)
+```
+
+
+
+```{r}
+data <- read.csv("CharityHospital_DATA_LABELS_2022-11-02_1446_labels.csv", encoding = "UTF-8") ### **encoding**
+
+bp <- read_excel("bp.xlsx")
+compl <- read_excel("complaint.xlsx")
+allerg <- read_excel('аллергия.xlsx')
+hr1 <- read_excel('Хронические 1.xlsx')
+hr2 <- read_excel('Хронические 2.xlsx')
+hr3 <- read_excel('Хронические.3.xlsx')
+hr4 <- read_excel('Хронические.4.xlsx')
+hr5 <- read_excel('Хронические.5.xlsx')
+
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cbPalette <- c( "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+```
+
+
+
+
+```{r}
+data$Repeat.Instrument <-  ifelse(data$Repeat.Instrument == '', 'Первый прием', data$Repeat.Instrument)
+```
+
+
+
+```{r}
+data$Аллергия.фактор <- NA
+
+for (i in 2:length(allerg$аллергия)) {
+  for (n in 1:length(data$Другая.причина.обращения.в.ББ.жалобы.развернуто)) {
+    if (data$Аллергия[n] == allerg$allergic[i]) {
+      data$Аллергия.фактор[n] <- allerg$аллергия[i]
+    }
+  }
+}
+
+data$Аллергия <- NULL
+
+```
+
+
+
+```{r}
+# data$Хронические.заболевания..1[data$Хронические.заболевания..1 == ''] <- NA
+data$Хр.заб.1 <- NA
+
+for (i in 2:length(hr1$Хр.заб.1)) {
+  for (n in 1:length(data$Хронические.заболевания..1)) {
+    if (data$Хронические.заболевания..1[n] == hr1$ch_ds_1[i]) {
+      data$Хр.заб.1[n] <- hr1$Хр.заб.1[i]
+    }
+  }
+}
+data$Хронические.заболевания..1 <- NULL
+
+
+```
+
+```{r}
+# data$Хронические.заболевания..1[data$Хронические.заболевания..1 == ''] <- NA
+data$Хр.заб.2 <- NA
+
+for (i in 2:length(hr2$...4)) {
+  for (n in 1:length(data$Хронические.заболевания..2)) {
+    if (data$Хронические.заболевания..2[n] == hr2$ch_ds_2[i]) {
+      data$Хр.заб.2[n] <- hr2$...4[i]
+    }
+  }
+}
+data$Хронические.заболевания..2 <- NULL
+
+
+```
+
+```{r}
+# data$Хронические.заболевания..1[data$Хронические.заболевания..1 == ''] <- NA
+data$Хр.заб.3 <- NA
+
+for (i in 2:length(hr3$...4)) {
+  for (n in 1:length(data$Хронические.заболевания..3)) {
+    if (data$Хронические.заболевания..3[n] == hr3$ch_ds_3[i]) {
+      data$Хр.заб.3[n] <- hr3$...4[i]
+    }
+  }
+}
+data$Хронические.заболевания..3 <- NULL
+
+
+```
+
+```{r}
+# data$Хронические.заболевания..1[data$Хронические.заболевания..1 == ''] <- NA
+data$Хр.заб.4 <- NA
+
+for (i in 2:length(hr4$...4)) {
+  for (n in 1:length(data$Хронические.заболевания..4)) {
+    if (data$Хронические.заболевания..4[n] == hr4$ch_ds_4[i]) {
+      data$Хр.заб.4[n] <- hr4$...4[i]
+    }
+  }
+}
+data$Хронические.заболевания..4 <- NULL
+
+
+```
+
+```{r}
+# data$Хронические.заболевания..1[data$Хронические.заболевания..1 == ''] <- NA
+data$Хр.заб.5 <- NA
+
+for (i in 2:length(hr5$...4)) {
+  for (n in 1:length(data$Хронические.заболевания..5)) {
+    if (data$Хронические.заболевания..5[n] == hr5$ch_ds_5[i]) {
+      data$Хр.заб.5[n] <- hr5$...4[i]
+    }
+  }
+}
+data$Хронические.заболевания..5 <- NULL
+
+
+```
+
+```{r}
+data$Жалобы1 <- NA
+data$Жалобы2 <- NA
+data$Жалобы3 <- NA
+
+for (i in 2:length(compl$Словарь)) {
+  for (n in 1:length(data$Другая.причина.обращения.в.ББ.жалобы.развернуто)) {
+    if (data$Другая.причина.обращения.в.ББ.жалобы.развернуто[n] == compl$complaint[i]) {
+      data$Жалобы1[n] <- compl$Жалобы1[i]
+      data$Жалобы2[n] <- compl$Жалобы2[i]
+      data$Жалобы3[n] <- compl$Жалобы3[i]
+    }
+  }
+}
+data$Другая.причина.обращения.в.ББ.жалобы.развернуто <- NULL
+```
+
+
+```{r}
+
+data[c('Год.приема', 'Время.приема')] <- data %>%dplyr::select(`Дата.и.время.приема`) %>% separate(Дата.и.время.приема, c('Год.приема', 'Время.приема'), sep = ' ')
+
+
+
+data$Сезон.приема <- month(as.Date(data$Год.приема)) 
+data$Сезон.приема [data$Сезон.приема == '12' | data$Сезон.приема == '1' | data$Сезон.приема == '2'] <- 'зима'
+data$Сезон.приема [data$Сезон.приема == '3' | data$Сезон.приема == '4' | data$Сезон.приема == '5'] <- 'весна'
+data$Сезон.приема [data$Сезон.приема == '6' | data$Сезон.приема == '7' | data$Сезон.приема == '8'] <- 'лето'
+data$Сезон.приема [data$Сезон.приема == '9' | data$Сезон.приема == '10' | data$Сезон.приема == '11'] <- 'осень'
+```
+
+
+```{r}
+data$Температура.тела..Т.[c(109, 331, 826)] <- NA
+
+
+
+```
+
+
+
+```{r}
+data <- data %>% 
+  mutate(across(c(!`Дата.рождения..ДД.ММ.ГГГГ.`, !'Температура.тела..Т.', !'Частота.дыхательных.движений..ЧДД.', !'Частота.сердечных.сокращений..ЧСС.', !'Глюкоза.крови'
+, where(is.character)), function(x) as.factor(x))) %>% 
+  mutate(`Record.ID` = as.factor(`X.U.FEFF.Record.ID`))  %>% # ***
+  mutate(`Возраст` = as.numeric(`Возраст`)) %>%  
+  mutate(`Глюкоза.крови` = as.numeric(`Глюкоза.крови`)) %>% 
+   mutate_at(vars(`Температура.тела..Т.`, 
+                 `Частота.дыхательных.движений..ЧДД.`, 
+                 `Частота.сердечных.сокращений..ЧСС.`), ~ gsub(",", ".", .) %>% as.numeric()) %>%
+ mutate(`Дата.рождения..ДД.ММ.ГГГГ.` = as.character(`Дата.рождения..ДД.ММ.ГГГГ.`)) 
+  data$X.U.FEFF.Record.ID <- NULL # ***
+  data$Комментарий.по.документам <- NULL
+  
+# %>% count(`Причины.бездомности..choice.Вынужденный.переселенец.`)
+
+
+```
+
+
+```{r}
+
+for (i in 1:length(data$Количество.CD4.клеток)) {
+  if (data$Количество.CD4.клеток[i] == "" | data$Количество.CD4.клеток[i] == "неизвестно" | data$Количество.CD4.клеток[i] == " -" | data$Количество.CD4.клеток[i] == "Впервые выявлен экспресс-тест 20.09.22") {
+    data$Количество.CD4.клеток[i] <- NA
+  } else if (data$Количество.CD4.клеток[i] == "24.91% 488.31 кл/мкл") {
+    data$Количество.CD4.клеток[i] <- "488"
+  }
+}
+data$Количество.CD4.клеток <- as.numeric(data$Количество.CD4.клеток)
+
+for (i in 1:length(data$Вирусная.нагрузка)) {
+  if (data$Вирусная.нагрузка[i] == "" | data$Вирусная.нагрузка[i] == "неизвестно" | data$Вирусная.нагрузка[i] == " -") {
+    data$Вирусная.нагрузка[i] <- NA
+  } 
+}
+data$Вирусная.нагрузка <- as.numeric(data$Вирусная.нагрузка)
+
+```
+
+
+```{r}
+data$Систолическое <- NA
+data$диастолическое <- NA
+data$Давление.фактор <- NA
+
+for (i in 2:length(bp$систолическое)) {
+  for (n in 1:length(data$Давление.фактор)) {
+    if (data$Артериальное.давление..АД.[n] == bp$bp[i]) {
+      data$Систолическое[n] <- bp$систолическое[i]
+      data$диастолическое[n] <- bp$диастолическое[i]
+      data$Давление.фактор[n] <- bp$Давление[i]
+    }
+  }
+}
+data$Артериальное.давление..АД. <- NULL
+data$Систолическое <- data$Систолическое %>% as.numeric()
+data$диастолическое <- as.numeric(data$диастолическое)
+
+```
+
+
+Charity hospital is a non-profit organization that provides medical and social assistance to homeless people in Saint Petersburg.  Volunteer doctors  consult patients, vaccinate them, provide them with glasses, etc. Since 2021, the REDCap electronic data capture system has been collecting  information about  all the Charity hospital patients. 
+The aim of this study was to analyze the patient database of the Charity hospital which contains information about 1633 unique patients and 4427 visits.  
+
+
+Objectives: 
+1. to prepare data for the analysis 
+2. to create the report with descriptive statistics 
+3. to create a universal portrait of the homeless person 
+4. to find relationship between place of appointment and other variables 
+5. to analyze HIV-positive population distinctly 
+6. to search for indicators on which the call to the ambulance depends
+
+
+#Descriptive statistics and a universal portrait of the homeless person
+
+
+```{r}
+
+# fct_count(data$Repeat.Instrument)
+
+#piepercent<- round(100*fct_count(data$Repeat.Instrument)$n/sum(fct_count(data$Repeat.Instrument)$n), 1)
+
+#pie(fct_count(data$Repeat.Instrument)$n, labels = piepercent, init.angle = -15, main = "Цель посещения",col = rainbow(length(fct_count(data$Repeat.Instrument)$n)))
+#legend("topright", c("Вакцинация","Для женщин", "Основной прием", "Оценка зрения", "Соц.сопровождение", "Фотобаза", "Первый прием", "Экспресс-тест-е" ), cex = 0.8,
+#   fill = rainbow(length(fct_count(data$Repeat.Instrument)$n)))
+
+
+
+#tab3 <- data %>% 
+#  dplyr::select(`Repeat.Instrument`, `Record.ID`) %>%
+#  group_by(`Record.ID`) %>%
+#  count(`Repeat.Instrument`, `Record.ID`) 
+
+#find_mode <- function (x) {
+# u <- unique(x)
+# tab <- tabulate(match(x, u))
+# u[tab == max(tab)]
+#}
+
+#find_mode(tab3$n[tab3$Repeat.Instrument == "ОСНОВНОЙ прием"])
+
+
+#mean(tab3$n[tab3$Repeat.Instrument == "ОСНОВНОЙ прием"], na.rm = TRUE)
+#max(tab3$n[tab3$Repeat.Instrument == "Социальное сопровождение"], na.rm = TRUE)
+#find_mode(tab3$n[tab3$Repeat.Instrument == "Фотобаза (раны, сыпи, выписки, #документы)"])
+#find_mode(tab3$n[tab3$Repeat.Instrument == "Вакцинация"])
+#find_mode(tab3$n[tab3$Repeat.Instrument == "Для бездомных женщин"])
+#find_mode(tab3$n[tab3$Repeat.Instrument == "Оценка зрения"])
+#find_mode(tab3$n[tab3$Repeat.Instrument == "Экспресс-тестирование"])
+#find_mode(tab3$n[tab3$Repeat.Instrument == "Социальное сопровождение"])
+
+
+d <- data$Repeat.Instrument %>% table %>% data.frame() 
+d$Freq <- 100 * d$Freq / nrow(data) %>% round(1)
+
+
+p <- plot_ly(x = d$.,
+        y = d$Freq,  #  Create barchart with plotly
+        type = "bar") 
+ p <-  layout(p, title = 'Анализ посещаемости', yaxis =   list( title = 'проценты'))
+p
+
+
+```
+
+
+
+
+
+
+
+```{r}
+age <- function(dob, age.day = today(), units = "years", floor = TRUE) {
+    calc.age = interval(dob, age.day) / duration(num = 1, units = units)
+    if (floor) return(as.integer(floor(calc.age)))
+    return(calc.age)
+}
+```
+
+```{r}
+data <- data %>% 
+  mutate(`Возраст` = age(`Дата.рождения..ДД.ММ.ГГГГ.`))  
+```
+
+
+```{r}
+df <- data
+data <- data %>% 
+  filter(data$Repeat.Instrument == "Первый прием") %>%
+  dplyr::select_if(~!(all(is.na(.)) | all(. == "")))
+```
+
+
+```{r}
+#data %>% colnames() %>% if_any(across(str_detect(., "Мобильный")), function(x) x == "TRUE")
+```
+
+
+```{r}
+#data %>% 
+ # dplyr::select(`Причины.бездомности..choice.Выселение.из.служебного.жилья.`) %>% 
+#  pull()
+# levels(data$Причины.бездомности..choice.Выселение.из.служебного.жилья.)
+#colnames(data)
+```
+
+
+```{r}
+#data %>% 
+ # dplyr::select(contains("Where.are")) %>%
+ #map(table)
+```
+
+
+
+
+# Факторный анализ
+
+
+```{r}  
+d <- data %>% dplyr::select(where(is.factor)) %>% dplyr::select(!contains(c('Record.ID', 'Дата', "Причины", "Complete", "What.", "Do.you.eat.any.of.the.", "Where.", "How.do.you", "Do.you.", "Services", "С.какого", "In.the.past.year.","Communicable.Languages.", "Check.if.this.person.", "Have.you.", "Анамнез.жизни", "Постоянный.прием.лекарственных.препаратов", 'Комментарий.по.социально.значимым.инфекциям.и.зависимостям', 'Комментарий.по.туберкулезу')))
+name <- colnames(d)[1]
+tab2 <- fct_count(d[,1]) %>% add_column(`Переменная` = name)
+for (i in 2:length(colnames(d))) {
+  name <- colnames(d)[i]
+  tab1 <- fct_count(d[,i]) %>% add_column(`Переменная` = name)
+  tab2 <- tab1 %>% bind_rows(tab2)
+}
+
+tab2 %>%
+  dplyr::select(`Переменная`, `Значение` = `f`, `Уникальные сочетания` = `n`) %>%
+  group_by(`Переменная`) %>%
+  flextable()  %>%
+  theme_box() %>%
+  merge_v(c("Переменная")) 
+
+
+
+
+```
+
+
+```{r}
+#Анализ пола пациентов, возраста
+ggplot() +
+  geom_histogram(data = data %>% filter(Пол != ''), aes(x=Возраст, fill=Пол))+
+  ylab('Количество пациентов') +
+   scale_fill_manual(values=cbPalette) +
+  theme_minimal()
+
+ggplot() +
+  geom_boxplot(data = data %>% filter(Пол != '') , aes(x=Возраст, fill=Пол))  +
+   scale_fill_manual(values=cbPalette) +
+  theme_minimal()
+
+```
+
+
+# Анализ зрения
+```{r}
+df <- df %>% 
+  dplyr::select(! Офтальмоскопия..OD,! Офтальмоскопия..OS ) %>% 
+  mutate_at(vars('OD.1', 'OD.2'), ~ ifelse(. == '', NA, .)) %>% 
+  mutate_at(vars('OD.1', 'OD.2'), ~ gsub(",", ".", .) %>% as.numeric()) 
+
+ggplot(data = df, aes(x=((OD.1+OD.2)/2))) + 
+  geom_histogram(fill="#66CCFF", colour="black") + 
+  labs(y = "Количество пациентов", x='Диоптрии') +
+  theme_minimal()
+  
+```
+
+
+
+
+
+```{r}
+### Переброс значений
+for (i in 1:length(df$Пол)) { 
+  ifelse(df$Пол[i] == '', df$Пол[i] <- df$Пол[df$Repeat.Instrument == 'Первый прием' &   df$Record.ID == df$Record.ID[i]], df$Пол[i]) 
+}
+
+for (i in 1:length(df$Возраст)) { 
+  ifelse(is.na(df$Возраст[i]) == TRUE, df$Возраст[i] <- df$Возраст[df$Repeat.Instrument == 'Первый прием' &   df$Record.ID == df$Record.ID[i]], df$Возраст[i]) 
+}
+#for (i in 1:length(df$Гражданство)) { 
+ # ifelse(df$Гражданство[i] == '', df$Гражданство[i] <- df$Гражданство[df$Repeat.Instrument == 'Первый прием' &   df$Record.ID == df$Record.ID[i]], #df$Гражданство[i]) 
+#}
+#for (i in 1:length(df$Регистрация)) { 
+#  ifelse(df$Регистрация[i] == '', df$Регистрация[i] <- df$Регистрация[df$Repeat.Instrument == 'Первый прием' &   df$Record.ID == df$Record.ID[i]], #df$Регистрация[i]) 
+#}
+#for (i in 1:length(df$Полис.ОМС)) { 
+#  ifelse(df$Полис.ОМС[i] == '', df$Полис.ОМС[i] <- df$Полис.ОМС[df$Repeat.Instrument == 'Первый прием' &   df$Record.ID == df$Record.ID[i]], #df$Полис.ОМС[i]) 
+#}
+#for (i in 1:length(df$СНИЛС)) { 
+ # ifelse(df$СНИЛС[i] == '', df$СНИЛС[i] <- df$СНИЛС[df$Repeat.Instrument == 'Первый прием' &   df$Record.ID == df$Record.ID[i]], df$СНИЛС[i]) 
+#}
+
+#for (i in 1:length(df$Паспорт..любой.)) { 
+#  ifelse(df$Паспорт..любой.[i] == '', df$Паспорт..любой.[i] <- df$Паспорт..любой.[df$Repeat.Instrument == 'Первый прием' &   df$Record.ID == #df$Record.ID[i]], df$Паспорт..любой.[i]) 
+#}
+
+for (i in 1:length(df$Хр.заб.1)) { 
+  ifelse(df$Хр.заб.1[i] == '', df$Хр.заб.1[i] <- df$Хр.заб.1[df$Repeat.Instrument == 'Первый прием' &   df$Record.ID == df$Record.ID[i]], df$Хр.заб.1[i]) 
+}
+
+for (i in 1:length(df$Хр.заб.2)) { 
+  ifelse(df$Хр.заб.2[i] == '', df$Хр.заб.2[i] <- df$Хр.заб.2[df$Repeat.Instrument == 'Первый прием' &   df$Record.ID == df$Record.ID[i]], df$Хр.заб.2[i]) 
+}
+
+for (i in 1:length(df$Хр.заб.3)) { 
+  ifelse(df$Хр.заб.3[i] == '', df$Хр.заб.3[i] <- df$Хр.заб.3[df$Repeat.Instrument == 'Первый прием' &   df$Record.ID == df$Record.ID[i]], df$Хр.заб.3[i]) 
+}
+
+```
+
+
+# ВИЧ
+
+
+
+```{r}
+
+df$Наличие.ВИЧ <- ifelse((df$ВИЧ.инфекция == 'есть, со слов' | df$ВИЧ.инфекция == 'диспансерный учет в ЦС'| df$Прием.АРВТ == 'да'), 1, 0)
+df$Наличие.ВИЧ <- ifelse(df$ВИЧ.инфекция == 'отрицает' , 0,  df$Наличие.ВИЧ)
+
+
+#получилось 87 человек с ВИЧ
+
+HIVdf_km <- df %>% select('Наличие.ВИЧ','Возраст') %>% filter(Возраст != '')
+library(survival)
+library(ggfortify)
+km <- with(df, Surv(Возраст, Наличие.ВИЧ))
+km_fit <- survfit(Surv(Возраст, Наличие.ВИЧ) ~ 1, data=df)
+autoplot(km_fit)
+```
+
+
+### ВИЧ GLM
+
+```{r}
+data_unique <- df %>% 
+  filter(df$Repeat.Instrument == "Первый прием") %>%
+  dplyr::select_if(~!(all(is.na(.)) | all(. == ""))) %>% dplyr::select(!`Repeat.Instrument`)
+#data_nas <- data_unique %>% mutate_all(na_if,"") %>% mutate_all(na_if," ") %>% mutate_all(na_if,"Unchecked") %>% mutate_all(na_if, "Incomplete")
+data_unique[data_unique == ''] <- NA
+data_unique[data_unique == 'Unchecked'] <- NA
+data_unique[data_unique == 'Incomplete'] <- NA
+data_nas <- data_unique
+# data_nas %>%
+  #summarise(across(everything(), function(x) (sum(is.na(x)) / length(x)) %>% round(2))) %>%
+  #pivot_longer(everything())%>% 
+  #arrange(desc(value)) %>%
+  #flextable() %>%
+  #color(i = ~ value >= 0.15, j = "value", color = "orange") %>%
+  #color(i = ~ value >= 0.30, j = "value", color = "coral1") %>%
+  #color(i = ~ value >= 0.50, j = "value", color = "red") %>%
+  #color(i = ~ value < 0.15, j = "value", color = "green")
+
+
+```
+
+```{r}
+data_nas$ВИЧ.инфекция <- ifelse(data_nas$ВИЧ.инфекция == "отрицает", '0', '1') %>% as.factor()
+
+```
+
+         
+```{r}
+data_nas$Гепатит.С <- ifelse(data_nas$Гепатит.С == "отрицает", '0', '1') %>% as.factor()
+data_nas$Гепатит.В <- ifelse(data_nas$Гепатит.В == "отрицает", '0', '1') %>% as.factor()
+data_nas$Сифилис  <- ifelse(data_nas$Сифилис == "отрицает", '0', '1') %>% as.factor()
+
+```
+  
+  
+
+        
+        
+        
+        
+        
+        
+        
+
+
+### MODEL вич
+созд дф трен
+
+```{r}
+set.seed(1234)
+create_train_test <- function(data, size = 0.8, train = TRUE) {
+    n_row = nrow(data)
+    total_row = size * n_row
+    train_sample <- 1: total_row
+    if (train == TRUE) {
+        return (data[train_sample, ])
+    } else {
+        return (data[-train_sample, ])
+    }
+}
+dfT <- data_nas %>% filter(is.na(ВИЧ.инфекция) == FALSE) %>% dplyr::select(`ВИЧ.инфекция`, `Анамнез.со.слов.по.ТБ`,`Возраст`, `Гражданство`, `Полис.ОМС`, `Пол`, `Паспорт..любой.`, `Гепатит.С` , `Гепатит.В`)
+data_train <- create_train_test(dfT, 0.8, train = TRUE) %>% na.omit()
+data_test <- create_train_test(dfT, 0.8, train = FALSE)%>% na.omit()
+
+
+logit <- glm(ВИЧ.инфекция ~  Анамнез.со.слов.по.ТБ  + Возраст  + Гражданство  + Полис.ОМС + Пол + Паспорт..любой. + Гепатит.С + Гепатит.В, data = data_train, family = "binomial") %>% step(trace = FALSE)
+summary(logit)
+
+```
+
+
+
+
+### MODEL гепатит С
+созд дф трен
+
+```{r}
+
+set.seed(1234)
+create_train_test <- function(data, size = 0.8, train = TRUE) {
+    n_row = nrow(data)
+    total_row = size * n_row
+    train_sample <- 1: total_row
+    if (train == TRUE) {
+        return (data[train_sample, ])
+    } else {
+        return (data[-train_sample, ])
+    }
+}
+dfT <- data_nas %>% filter(is.na(Гепатит.С) == FALSE) %>% dplyr::select(`Гепатит.С`, `Анамнез.со.слов.по.ТБ`,`Возраст`, `Гражданство`, `Полис.ОМС`, `Пол`, `Паспорт..любой.`, `ВИЧ.инфекция`,  `Гепатит.В` )
+data_train <- create_train_test(dfT, 0.8, train = TRUE) %>% na.omit()
+data_test <- create_train_test(dfT, 0.8, train = FALSE)%>% na.omit()
+
+
+logit <- glm(Гепатит.С ~  Анамнез.со.слов.по.ТБ  + Возраст  + Гражданство  + Полис.ОМС + Пол + Паспорт..любой. + ВИЧ.инфекция +  Гепатит.В, data = data_train, family = "binomial") %>% step(trace = FALSE)
+summary(logit)
+
+```
+
+
+
+
+
+
+
+
+
+
+----------------КРАМЕРА
+
+To search for indicators on which the call to the emergency medical services to the patient depends, we used Cramér's V for nominal variables. Regression analysis was unavailable due to lack of data.  
+To calculate the strength of association, we built a table, the values of which were then divided into three categories: weak, moderate and strong connection. No strong association between the variables was found. A moderate association was observed between hospitalization and the following variables: complaints, edema (anasarca), vomiting (uncontrollable), SpO2 saturation.
+
+```{r}
+
+SMP <- df %>% filter(df$Наши.действия..choice.вызываем.СМП. != "" )  %>%
+  dplyr::select_if(~!(all(is.na(.)) | all(. == ""))) %>% dplyr::select(!contains(c('Дата', 'Анамнез', "Объективно", "Трактоввка.диагноза", "Лечение", "Куда.направили.по.ф", "Год.приема", "Время.приема", "Record.ID", 'Живот')))
+
+# unique(SMP$Repeat.Instrument)
+SMP[SMP==""] <- NA
+
+SMP <- SMP %>% filter(Наши.действия..choice.пациент.отказался.от.госпитализации. == 'Unchecked')
+
+
+SMPfac <- SMP %>% dplyr::select(where(is.factor)) %>% dplyr::select(`Наши.действия..choice.вызываем.СМП.`, everything())
+
+tabSMP <- data.frame(Переменная = character(), Значение = numeric())
+
+
+for (i in 2:length(SMPfac)) {
+  C <- data.frame(SMPfac[1], SMPfac[i]) %>% na.omit %>% droplevels() %>% table %>% cramerV()
+  n <- colnames(SMPfac[i])
+  tabSMPfunc <- data.frame(`Переменная` = n, `Значение` = C) 
+  tabSMP <- tabSMPfunc %>% bind_rows(tabSMP)
+}
+tabSMP$Результат <- ifelse(tabSMP$Значение < 0.2, 'слабая связь', 'средняя связь')
+tabSMP$Результат <- ifelse(tabSMP$Значение > 0.4, 'сильная связь', tabSMP$Результат)
+
+tabSMP <- tabSMP %>% filter(Значение < 0.9)
+tabSMP
+# tabSMP <- tabSMP %>% filter(`Переменная` != 'Живот')
+```
+
+```{r}
+#s1 <- SMP %>%  
+ # dplyr::select(`Наши.действия..choice.вызываем.СМП.` , `Возраст`) %>% filter(Возраст #!= '') %>%  na.omit()
+#biserial.cor(s1$Возраст , s1$Наши.действия..choice.вызываем.СМП. %>% droplevels() )
+```
+
+```{r}
+#s1 <- SMP %>%  
+#  dplyr::select(`Наши.действия..choice.вызываем.СМП.` , `Температура.тела..Т.`) %>% #filter(Температура.тела..Т. != '') %>%  na.omit()
+#biserial.cor(s1$Температура.тела..Т. , s1$Наши.действия..choice.вызываем.СМП. %>% #droplevels() )
+#s1 %>% map(table)
+```
+
+
+
+
+
+
+```{r}
+data <- df
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+# ДРУГОЕ
+
+
+
+
+
+# Анализ МС (место приема)
+```{r}
+#Ms <- data  %>% filter( Место.приема == 'МС')  %>%
+ # dplyr::select_if(~!(all(is.na(.)) | all(. == ""))) %>% droplevels()
+
+
+```
+категор
+```{r}
+#MsD <- Ms %>% dplyr::select(where(is.factor)) %>% dplyr::select(!contains(c('Record.ID', 'Дата', "Причины", 'Время', 'Лечение',  "Complete", "What.", "Do.you.eat.any.of.the.", "Where.", "How.do.you", "Do.you.", "Services", "С.какого", "In.the.past.year.","Communicable.Languages.", "Check.if.this.person.", "Have.you.")))
+#name <- colnames(MsD)[1]
+#tab2 <- fct_count(MsD[,1]) %>% add_column(`Переменная` = name)
+#for (i in 2:length(colnames(MsD))) {
+ # name <- colnames(MsD)[i]
+#  tab1 <- fct_count(MsD[,i]) %>% add_column(`Переменная` = name)
+#  tab2 <- tab1 %>% bind_rows(tab2)
+#}
+
+#tab2 %>%
+#  dplyr::select(`Переменная`, `Значение` = `f`, `Уникальные сочетания` = `n`) %>%
+#  group_by(`Переменная`) %>%
+#  flextable()  %>%
+#  theme_box() %>%
+#  merge_v(c("Переменная")) 
+
+```
+
+```{r}
+#data$Наши.действия..choice.проводим.перевязку. %>% table()
+#data$Жалобы..nbsp...choice.рана. %>% table()
+#data$Жалобы..nbsp...choice.опорно.двигательная.система. %>% table()
+#data$Где.ночует.пациент.сегодня...или.где.ночевал.вчера.. %>% table()
+```
+
+колич
+```{r}
+statistics <- list( `Количество субъектов` = ~length(.x) %>% as.character(),
+                    `Количество (есть данные)` = ~sum(!is.na(.x)) %>% as.character(),
+                    `Нет данных` = ~sum(is.na(.x)) %>% as.character(),
+                    `Ср. знач.` = ~ifelse(sum(!is.na(.x)) == 0, "Н/П*", mean(.x, na.rm = TRUE) %>% round(2) %>% as.character()),
+                    `Станд. отклон.` = ~ifelse(sum(!is.na(.x)) < 3, "Н/П*", sd(.x, na.rm = TRUE) %>% round(2) %>% as.character()),
+      `95% ДИ для среднего` = ~paste0(confint(lm(.x ~ 1), level = 0.95)[1] %>% round(2) %>% as.character(), " - ",confint(lm(.x ~ 1), level = 0.95)[2] %>% round(2) %>% as.character()) ,
+      `мин. - макс.` = ~ifelse(sum(!is.na(.x)) == 0, "Н/П*", paste0(min(.x, na.rm = TRUE) %>% round(2), " - ", max(.x, na.rm = TRUE) %>% round(2)) %>% as.character()),
+      `Медиана` = ~ifelse(sum(!is.na(.x)) == 0, "Н/П*", median(.x, na.rm = TRUE) %>% round(2) %>% as.character())
+                    
+                     )
+```
+
+```{r}
+#Ms %>% 
+#  select(`Место.приема`, where(is.numeric)) %>%
+ # group_by(`Место.приема`) %>% 
+#  summarise(across(where(is.numeric), statistics)) %>% 
+#  pivot_longer(!`Место.приема`) %>%
+#  separate(name, into = c("Переменная", "Статистика"), sep = "_") %>%
+#  rename(`Значение` = value) %>%
+#  flextable() %>%
+#  theme_box() %>%
+#  merge_v(c("Группа", "Переменная")) %>%
+#  width(width=1.7)
+```
+для возраста
+```{r}
+#Ms %>% filter(Ms$Repeat.Instance == '1') %>%
+ # select(`Место.приема`, where(is.numeric)) %>%
+#  group_by(`Место.приема`) %>% 
+#  summarise(across(where(is.numeric), statistics)) %>% 
+#  pivot_longer(!`Место.приема`) %>%
+#  separate(name, into = c("Переменная", "Статистика"), sep = "_") %>%
+#  rename(`Значение` = value) %>%
+#  flextable() %>%
+#  theme_box() %>%
+#  merge_v(c("Группа", "Переменная")) %>%
+#  width(width=1.7)
+```
+
+# Анализ НП (место приема)
+```{r}
+NP <- data  %>% filter( Место.приема == 'НП')  %>%
+  dplyr::select_if(~!(all(is.na(.)) | all(. == ""))) %>% droplevels()
+
+
+```
+категор
+```{r}
+# NPD <- NP %>% dplyr::select(where(is.factor)) %>% dplyr::select(!contains(c('Record.ID', 'Дата', "Причины", 'Время', 'Лечение',  "Complete", "What.", "Do.you.eat.any.of.the.", "Where.", "How.do.you", "Do.you.", "Services", "С.какого", "In.the.past.year.","Communicable.Languages.", "Check.if.this.person.", "Have.you.")))
+# name <- colnames(NPD)[1]
+# tab2 <- fct_count(NPD[,1]) %>% add_column(`Переменная` = name)
+# for (i in 2:length(colnames(NPD))) {
+#  name <- colnames(NPD)[i]
+ # tab1 <- fct_count(NPD[,i]) %>% add_column(`Переменная` = name)
+  #tab2 <- tab1 %>% bind_rows(tab2)
+#}
+
+#tab2 %>%
+ # dplyr::select(`Переменная`, `Значение` = `f`, `Уникальные сочетания` = `n`) %>%
+  #group_by(`Переменная`) %>%
+  #flextable()  %>%
+  #theme_box() %>%
+  #merge_v(c("Переменная")) 
+
+```
+
+
+```{r}
+#data$Наши.действия..choice.выдаем.медикаменты. %>% table()
+#data$Жалобы..nbsp...choice.рана. %>% table()
+#data$Жалобы..nbsp...choice.опорно.двигательная.система. %>% table()
+#data$Где.ночует.пациент.сегодня...или.где.ночевал.вчера.. %>% table()
+```
+
+колич
+
+```{r}
+#NP %>% 
+#  select(`Место.приема`, where(is.numeric)) %>%
+#  group_by(`Место.приема`) %>% 
+#  summarise(across(where(is.numeric), statistics)) %>% 
+#  pivot_longer(!`Место.приема`) %>%
+#  separate(name, into = c("Переменная", "Статистика"), sep = "_") %>%
+#  rename(`Значение` = value) %>%
+#  flextable() %>%
+#  theme_box() %>%
+#  merge_v(c("Группа", "Переменная")) %>%
+#  width(width=1.7)
+```
+
+
+для возраста
+```{r}
+#NP %>% filter(NP$Repeat.Instance == '1') %>%
+#  select(`Место.приема`, where(is.numeric)) %>%
+#  group_by(`Место.приема`) %>% 
+#  summarise(across(where(is.numeric), statistics)) %>% 
+#  pivot_longer(!`Место.приема`) %>%
+#  separate(name, into = c("Переменная", "Статистика"), sep = "_") %>%
+ # rename(`Значение` = value) %>%
+#  flextable() %>%
+#  theme_box() %>%
+#  merge_v(c("Группа", "Переменная")) %>%
+#  width(width=1.7)
+
+
+```
+
+
+```{r}
+U_ung <- data %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>%
+  filter(Где.ночует.пациент.сегодня...или.где.ночевал.вчера.. == 'в публичных местах (ТЦ, переходы метро, остановки) или на улице' |
+               Где.ночует.пациент.сегодня...или.где.ночевал.вчера.. == 'временно с семьей, друзьями, знакомыми' |
+               Где.ночует.пациент.сегодня...или.где.ночевал.вчера.. == 'квартира\\дом в собственности' |
+               Где.ночует.пациент.сегодня...или.где.ночевал.вчера.. == 'низкопороговые приюты для бездомных (ночные, пункты обогрева)' |
+               Где.ночует.пациент.сегодня...или.где.ночевал.вчера.. == 'подвалы, парадные, чердаки' |
+               Где.ночует.пациент.сегодня...или.где.ночевал.вчера.. == 'постоянные приюты для бездомных (24\\7)' |
+               Где.ночует.пациент.сегодня...или.где.ночевал.вчера.. == 'транзитное и поддерживаемое проживание (ДНП, менее 1 года)') %>%
+  dplyr::select(`Место.приема`, `Где.ночует.пациент.сегодня...или.где.ночевал.вчера..`) %>% droplevels() %>% na.omit() 
+U_ung %>% table()
+
+
+```
+```{r}
+
+
+
+ggplot(U_ung, aes(x=Место.приема,  fill=Где.ночует.пациент.сегодня...или.где.ночевал.вчера..)) + geom_bar() +
+   scale_fill_manual(values=cbbPalette) +
+  theme_minimal() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme(legend.position = "left") 
+```
+
+```{r}
+ggplot(df%>% dplyr::select(`Место.приема`, `Сезон.приема`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% na.omit() %>% droplevels(), aes(x= Место.приема, fill = Сезон.приема)) +
+  geom_bar(position=position_dodge()) +
+  theme_minimal() +  
+   scale_fill_manual(values=cbPalette)
+  
+```
+
+
+
+
+анализ времемни
+
+
+```{r}
+time <- data %>% dplyr::select(`Время.приема`, `Repeat.Instrument`)  %>% na.omit()
+data$Period <-  as.numeric(as.period(ms(data$Время.приема), unit = "min"))
+data <- data %>% 
+  mutate(
+    time_group = case_when(
+      Period < 540 ~ "до 9",
+      Period >= 541 & Period < 600 ~ "9-10",
+      Period >= 601 & Period < 660 ~ "10-11",
+      Period >= 661 & Period < 720 ~ "11-12",
+      Period >= 721 & Period < 780 ~ "12-13",
+      Period >= 781 & Period < 840 ~ "13-14",
+      Period >= 841 & Period < 900 ~ "14-15",
+      Period >= 901 & Period < 960 ~ "15-16",
+      Period >= 961 & Period < 1020 ~ "17-18",
+      Period >= 1021 & Period < 1080 ~ "18-19",
+      Period >= 1081 & Period < 1140 ~ "19-20",
+      Period >= 1200 & Period < 1260 ~ "20-21",
+      Period >= 1261 & Period < 1320 ~ "21-22",
+      Period >= 1321 & Period < 1380 ~ "22-23",
+      Period >= 1381 & Period < 1441 ~ "23-24"
+    ))
+
+
+tabl <- data %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% filter(Period > 540 )%>% droplevels() %>% select(`Место.приема`, `time_group`, `Period`) 
+
+tabl %>% dplyr::select(!`Period`) %>% table()
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7") 
+
+#ggplot(data %>% filter(Место.приема == 'АМ Тухачевского'| 
+ #               Место.приема == 'АМ\\НА Лесная' |
+  #              Место.приема == 'АМ Тухачевского' |
+   #             Место.приема == 'Атаманская, 6' |
+    #            Место.приема == 'МС' |
+     #           Место.приема == 'НП' ) %>% filter(Period > 540 )%>% droplevels() %>% select(`Место.приема`, `time_group`) %>% na.omit(), aes(x=time_group, y = ,  fill=Место.приема)) + geom_bar() +
+#   scale_fill_manual(values=cbbPalette) +
+#  theme_minimal() +
+#  ylim(-100,120) +
+#  coord_polar(start = 0)
+
+
+
+
+
+#ggplot(tabl %>% table() %>% data.frame() %>% filter(Freq != 0), aes(x=time_group, y = Freq,  fill=Место.приема)) + 
+#  geom_bar(stat = "identity") +
+#   scale_fill_manual(values=cbbPalette) +
+#  theme_minimal() +
+#  ylim(-100,120) +
+#  coord_polar(start = 0)
+#+
+ # ylim(-100,120) +
+  #coord_polar(start = 0)
+
+```
+```{r}
+ggplot(data %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% filter(Period > 540 )%>% droplevels() %>% select(`Место.приема`, `time_group`) %>% na.omit(), aes(x=time_group, y = ,  fill=Место.приема)) + geom_bar() +
+   scale_fill_manual(values=cbbPalette) +
+  theme_minimal() 
+
+
+```
+
+```{r}
+library(ggridges)
+
+
+ggplot(tabl, aes(x = Period, y = Место.приема, fill = Место.приема)) +
+  geom_density_ridges()  +
+  theme_ridges() + 
+  theme(legend.position = "none")
+
+```
+
+```{r}
+#ggplot(tabl, aes(x = Period, y = Место.приема, fill = stat(x))) +
+ # geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+#  scale_fill_viridis_c(name = "Temp. [F]", option = "C") +
+ # theme_ridges()
+```
+
+
+```{r}
+data$time_group %>% table()
+```
+# Давление сист
+тест
+
+```{r}
+df %>% dplyr::select(`Место.приема`,`Систолическое`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% droplevels()  %>% filter(Систолическое != '') %>%  na.omit() %>% group_by(`Место.приема`) %>% summarise(across(`Систолическое`, function(x) x %>% shapiro.test() %>% .$p.value))
+kruskal.test(Систолическое ~ Место.приема, df %>% filter(Систолическое != '') %>% dplyr::select(`Место.приема`,`Систолическое`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>%  na.omit()) %>% .$p.value
+dunn_test(df %>% dplyr::select(`Место.приема`,`Систолическое`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% filter(Систолическое != '') %>%  na.omit() %>%  droplevels(), Систолическое ~ Место.приема)
+
+```
+
+```{r}
+boxplot(data = df %>% dplyr::select(`Место.приема`,`Систолическое`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% filter(Систолическое != '') %>% filter(Систолическое >= 50 )%>%  na.omit() %>%  droplevels(),  Систолическое ~ Место.приема, col = cbPalette)
+
+
+ggplot(data = df %>% dplyr::select(`Место.приема`,`Систолическое`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% filter(Систолическое != '') %>% filter(Систолическое >= 50 )%>%  na.omit() %>%  droplevels(), aes(x=Место.приема, y=Систолическое, fill=Место.приема)) + 
+    geom_violin() +
+    xlab("class") +
+    theme(legend.position="none") +
+    xlab("") +
+  theme_minimal() +
+   scale_fill_manual(values=cbPalette)
+```
+
+диаст 
+
+```{r}
+
+df %>% dplyr::select(`Место.приема`,`диастолическое`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% droplevels()  %>% filter(диастолическое != '') %>%  na.omit() %>% group_by(`Место.приема`) %>% filter(диастолическое >= 50 & диастолическое <= 130) %>% summarise(across(`диастолическое`, function(x) x %>% shapiro.test() %>% .$p.value))
+kruskal.test(диастолическое ~ Место.приема, df %>% filter(диастолическое != '') %>% dplyr::select(`Место.приема`,`диастолическое`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>%  filter(диастолическое >= 50 & диастолическое <= 130)%>% na.omit()) %>% .$p.value
+dunn_test(df %>% dplyr::select(`Место.приема`,`диастолическое`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% filter(диастолическое != '') %>% filter(диастолическое >= 50 & диастолическое <= 130) %>%  na.omit() %>%  droplevels(), диастолическое ~ Место.приема)
+
+```
+
+```{r}
+boxplot(data = df %>% dplyr::select(`Место.приема`,`диастолическое`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% filter(диастолическое != '') %>% filter(диастолическое >= 50 & диастолическое <= 130)%>%  na.omit() %>%  droplevels(),  диастолическое ~ Место.приема, col = cbPalette)
+
+ggplot(data = df %>% dplyr::select(`Место.приема`,`диастолическое`) %>% filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>% filter(диастолическое != '') %>% filter(диастолическое >= 50 & диастолическое <= 130) %>%  na.omit() %>%  droplevels(), aes(x=Место.приема, y=диастолическое, fill=Место.приема)) + 
+    geom_violin() +
+    xlab("class") +
+    theme(legend.position="none") +
+    xlab("") +
+  theme_minimal() +
+   scale_fill_manual(values=cbPalette)
+```
+
+```{r}
+ tabl <- tabl %>% dplyr::select(!`Period`) %>% table() %>% data.frame() 
+#empty_bar <- 12
+#to_add <- data.frame( matrix(NA, empty_bar*nlevels(tabl$time_group), ncol(tabl)) )
+#colnames(to_add) <- colnames(tabl)
+#to_add$time_group <- rep(levels(tabl$time_group), each=empty_bar)
+#tabl <- rbind(tabl, to_add)
+#tabl <- tabl %>% arrange(time_group)
+#tabl$id <- seq(1, nrow(tabl))
+# 
+## Get the name and the y position of each label
+#label_data <- tabl
+#number_of_bar <- nrow(label_data)
+#angle <- 90 - 360 * (label_data$id-0.5) /number_of_bar     # I substract 0.5 because the letter must have the angle of the center of the bars. Not extreme right(1) or extreme left #(0)
+#label_data$hjust <- ifelse( angle < -90, 1, 0)
+#label_data$angle <- ifelse(angle < -90, angle+180, angle)
+# 
+## Make the plot
+#p <- ggplot(tabl, aes(x=time_group, y=Freq, fill=Место.приема)) +       # Note that id is a factor. If x is numeric, there is some space between the first bar
+#  geom_bar(stat="identity") +
+#  ylim(-100,120) +
+#  theme_minimal() +
+##  theme(
+#    legend.position = "none",
+ #   axis.text = element_blank(),
+  #  axis.title = element_blank(),
+  #  panel.grid = element_blank(),
+  #  plot.margin = unit(rep(-1,4), "cm") 
+  #) +
+  #coord_polar()  #+ 
+# # geom_text(data=label_data, aes(x=id, y=value+10, label=individual, hjust=hjust), color="black", fontface="bold",alpha=0.6, size=2.5, angle= label_data$angle, inherit.aes = FALSE ) 
+ #tabl
+#p
+```
+
+
+```{r}
+#library(viridis)
+
+#tabl <- tabl %>% gather(key = "observation", value="value", -c(1,2)) 
+ 
+# Set a number of 'empty bar' to add at the end of each group
+#empty_bar <- 2
+#nObsType <- nlevels(as.factor(tabl$observation))
+#to_add <- data.frame( matrix(NA, empty_bar*nlevels(tabl$time_group)*nObsType, ncol(tabl)) )
+#colnames(to_add) <- colnames(tabl)
+#to_add$time_group <- rep(levels(tabl$time_group), each=empty_bar*nObsType )
+#tabl <- rbind(tabl, to_add)
+#tabl <- tabl %>% arrange(time_group, Место.приема)
+#tabl$id <- rep( seq(1, nrow(tabl)/nObsType) , each=nObsType)
+ 
+# Get the name and the y position of each label
+#label_tabl <- tabl %>% group_by(id, Место.приема) %>% summarize(tot=sum(value))
+#number_of_bar <- nrow(label_tabl)
+#angle <- 90 - 360 * (label_tabl$id-0.5) /number_of_bar     # I substract 0.5 because the letter must have the angle of the center of the bars. Not extreme right(1) or extreme left (0)
+#label_tabl$hjust <- ifelse( angle < -90, 1, 0)
+#label_tabl$angle <- ifelse(angle < -90, angle+180, angle)
+ 
+# prepare a data frame for base lines
+#base_data <- tabl %>% 
+#  group_by(time_group) %>% 
+#  summarize(start=min(id), end=max(id) - empty_bar) %>% 
+ # rowwise() %>% 
+  #mutate(title=mean(c(start, end)))
+ 
+# prepare a data frame for grid (scales)
+#grid_data <- base_data
+#grid_data$end <- grid_data$end[ c( nrow(grid_data), 1:nrow(grid_data)-1)] + 1
+#grid_data$start <- grid_data$start - 1
+#grid_data <- grid_data[-1,]
+ 
+# Make the plot
+#p <- ggplot(tabl) +      
+  
+  # Add the stacked bar
+ # geom_bar(aes(x=as.factor(id), y=value, fill=observation), stat="identity", alpha=0.5) +
+  #scale_fill_viridis(discrete=TRUE) +
+  
+  # Add a val=100/75/50/25 lines. I do it at the beginning to make sur barplots are OVER it.
+  #geom_segment(data=grid_data, aes(x = end, y = 0, xend = start, yend = 0), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
+  #geom_segment(data=grid_data, aes(x = end, y = 50, xend = start, yend = 50), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
+  #geom_segment(data=grid_data, aes(x = end, y = 100, xend = start, yend = 100), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
+  #geom_segment(data=grid_data, aes(x = end, y = 150, xend = start, yend = 150), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
+  #geom_segment(data=grid_data, aes(x = end, y = 200, xend = start, yend = 200), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
+  
+  # Add text showing the value of each 100/75/50/25 lines
+  #ggplot2::annotate("text", x = rep(max(tabl$id),5), y = c(0, 50, 100, 150, 200), label = c("0", "50", "100", "150", "200") , color="grey", size=6 , angle=0, fontface="bold", hjust=1) +
+  
+  #ylim(-150,max(label_tabl$tot, na.rm=T)) +
+  #theme_minimal() +
+  #theme(
+  #  legend.position = "none",
+  #  axis.text = element_blank(),
+  #  axis.title = element_blank(),
+  #  panel.grid = element_blank(),
+  #  plot.margin = unit(rep(-1,4), "cm") 
+  #) +
+  #coord_polar() +
+  #geom_segment(data=base_data, aes(x = start, y = -5, xend = end, yend = -5), colour = "black", alpha=0.8, size=0.6 , inherit.aes = FALSE ) +
+  # Add labels on top of each bar
+  #geom_text(data=label_tabl, aes(x=id, y=tot+10, label=Место.приема, hjust=hjust), color="black", fontface="bold",alpha=0.6, size=5, angle= label_tabl$angle, inherit.aes = FALSE ) 
+    #+
+#  geom_text(data=base_data, aes(x = title, y = -18, label=time_group), hjust=c(1,1,0,0), colour = "black", alpha=0.8, size=4, fontface="bold", inherit.aes = FALSE)
+
+
+```
+
+```{r}
+df %>% 
+  select(`Возраст`, `Место.приема`)%>%
+  filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная' |
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП' ) %>%
+  filter((!is.na(`Возраст`) | Возраст != "") & (!is.na(`Место.приема`) | Место.приема != "")) %>%
+  ggplot(aes(x = Место.приема, y = Возраст, fill = `Место.приема`)) +
+  geom_boxplot() + scale_fill_brewer(palette = "Set1") +
+  labs(title = "Распределение возраста по местам приема")
+
+
+df %>%
+  select(`Пол`, `Место.приема`) %>%
+  filter(Место.приема == 'АМ Тухачевского'| 
+                Место.приема == 'АМ\\НА Лесная'|
+                Место.приема == 'АМ Тухачевского' |
+                Место.приема == 'Атаманская, 6' |
+                Место.приема == 'МС' |
+                Место.приема == 'НП') %>% 
+  filter((`Пол` == "мужской" | Пол == "женский") & (!is.na(`Место.приема`) & Место.приема != "")) %>%
+  ggplot(aes(x = .$`Место.приема`, fill = .$`Пол`)) +
+  geom_bar() +
+  ggtitle("Распределение по полу в местах приема") + 
+  xlab("Место приема") + 
+  ylab("Кол-во пациентов") + 
+  labs(fill = "Пол")
+```
+
+
+
+# Вакцинация
+
+
+Вакцинация
+
+
+```{r}
+
+Vak <- data %>% 
+  filter(data$Repeat.Instrument == "Вакцинация") %>%
+  dplyr::select_if(~!(all(is.na(.)) | all(. == "")))
+
+
+dfvak <- df %>% filter(Record.ID %in% Vak$Record.ID)  %>%
+  dplyr::select_if(~!(all(is.na(.)) | all(. == "")))
+#dfvak$Record.ID
+d <- Vak %>% dplyr::select(where(is.factor)) %>% dplyr::select(!contains(c('Record.ID', 'Дата', "Причины", "Complete", "What.", "Do.you.eat.any.of.the.", "Where.", "How.do.you", "Do.you.", "Services", "С.какого", "In.the.past.year.","Communicable.Languages.", "Check.if.this.person.", "Have.you.", "Анамнез.жизни", "Постоянный.прием.лекарственных.препаратов", 'Комментарий.по.социально.значимым.инфекциям.и.зависимостям', 'Комментарий.по.туберкулезу')))
+name <- colnames(d)[1]
+tab2 <- fct_count(d[,1]) %>% add_column(`Переменная` = name)
+for (i in 2:length(colnames(d))) {
+  name <- colnames(d)[i]
+  tab1 <- fct_count(d[,i]) %>% add_column(`Переменная` = name)
+  tab2 <- tab1 %>% bind_rows(tab2)
+}
+
+tab2 %>%
+  dplyr::select(`Переменная`, `Значение` = `f`, `Уникальные сочетания` = `n`) %>%
+  group_by(`Переменная`) %>%
+  flextable()  %>%
+  theme_box() %>%
+  merge_v(c("Переменная")) 
+#dfvak %>% map(table)
+#colnames(df)
+```
+
+
+
