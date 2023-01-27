@@ -20,7 +20,7 @@ visits.
 
 # Objectives: 
 1. to prepare data for the analysis 
-2. 2. to create the report
+2. to create the report
 with descriptive statistics 
 3. to create a universal portrait of the
 homeless person 
@@ -29,7 +29,7 @@ other variables
 5. to analyze HIV-positive population distinctly 6. to
 search for indicators on which the call to the ambulance depends
 
-\#Descriptive statistics and a universal portrait of the homeless person
+# Descriptive statistics and a universal portrait of the homeless person
 
 ![](final_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
