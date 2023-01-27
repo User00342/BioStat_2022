@@ -29,6 +29,11 @@ other variables
 5. to analyze HIV-positive population distinctly 
 6. to search for indicators on which the call to the ambulance depends
 
+# Methods and Approaches
+Statistical analysis was performed using R package (version 4.2 or higher) with specialized software Rstudio.
+Standard parametric criteria were used to compare quantitative data: Student's t-test for dependent/independent samples, analysis of variance (ANOVA) for repeated measures. Frequencies between groups were compared using Pearson's χ2 test or Fisher's exact test.
+If any of the baseline data revealed significant noncomparability of the study groups (statistically and clinically significant differences in demographic and other baseline data between the groups), we additionally performed analysis using multivariate statistics (linear or logistic regression depending on the type of parameter under study). In describing all estimated values, both p-values and point estimates with corresponding 95% confidence intervals are presented. 
+
 # Descriptive statistics and a universal portrait of the homeless person
 Visit analysis.
 We were provided with data on 1633 unique patients. Patients had the following goals for the visit:
