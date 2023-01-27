@@ -44,25 +44,17 @@ search for indicators on which the call to the ambulance depends
 
 ![](final_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-# ВИЧ
+# HIV
 
 ![](final_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
-### ВИЧ GLM
+созд дф трен
 
-### MODEL вич
+# Hepatitis C
 
 созд дф трен
 
-    ## PhantomJS not found. You can install it with webshot::install_phantomjs(). If it is installed, please make sure the phantomjs executable can be found via the PATH variable.
-
-### MODEL гепатит С
-
-созд дф трен
-
-    ## PhantomJS not found. You can install it with webshot::install_phantomjs(). If it is installed, please make sure the phantomjs executable can be found via the PATH variable.
-
-—————-КРАМЕРА
+# Cramer\`s V
 
 To search for indicators on which the call to the emergency medical
 services to the patient depends, we used Cramér’s V for nominal
@@ -239,30 +231,17 @@ the following variables: complaints, edema (anasarca), vomiting
 
 для возраста
 
-![](final_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
-
-![](final_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
-
-анализ времемни
-
-    ##          Значения 10-11 11-12 12-13 13-14 14-15 15-16 17-18 18-19 19-20 20-21
-    ## 1 АМ Тухачевского   131    39     2     1     0     0     0     0     0     0
-    ## 2   АМ\\НА Лесная     0     9    93    99    12     0     0     0     0     0
-    ## 3   Атаманская, 6     0     0     0     0     0     2    75    88    22     1
-    ## 4              МС    15    62    50    53    31    18     8    10     4     9
-    ## 5              НП     0     1     0     4    11     4     0     0     1    84
-    ##   21-22 22-23 23-24 9-10
-    ## 1     0     0     0   30
-    ## 2     0     0     3    0
-    ## 3     3     0     0    0
-    ## 4     5     1     5    2
-    ## 5   180    39     1    0
+![](final_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 ![](final_files/figure-gfm/unnamed-chunk-51-1.png)<!-- -->
 
+анализ времемни
+
+![](final_files/figure-gfm/unnamed-chunk-53-1.png)<!-- -->
+
     ## Picking joint bandwidth of 0.278
 
-![](final_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
+![](final_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
 
     ## .
     ## 10-11 11-12 12-13 13-14 14-15 15-16 17-18 18-19 19-20 20-21 21-22 22-23 23-24 
@@ -300,7 +279,7 @@ the following variables: complaints, edema (anasarca), vomiting
     ## 10 Систолическое "МС"         "НП"     138    86   3.47  5.16e-4 0.00516 **     
     ## # ... with abbreviated variable names 1: statistic, 2: p.adj.signif
 
-![](final_files/figure-gfm/unnamed-chunk-56-1.png)<!-- -->
+![](final_files/figure-gfm/unnamed-chunk-58-1.png)<!-- -->
 
 диаст
 
@@ -330,9 +309,9 @@ the following variables: complaints, edema (anasarca), vomiting
     ## 10 диастолическое "МС"        "НП"     138    85  5.77   7.71e-9 7.71e-8 ****   
     ## # ... with abbreviated variable names 1: statistic, 2: p.adj.signif
 
-![](final_files/figure-gfm/unnamed-chunk-58-1.png)<!-- -->
+![](final_files/figure-gfm/unnamed-chunk-60-1.png)<!-- -->
 
-![](final_files/figure-gfm/unnamed-chunk-61-1.png)<!-- -->![](final_files/figure-gfm/unnamed-chunk-61-2.png)<!-- -->
+![](final_files/figure-gfm/unnamed-chunk-63-1.png)<!-- -->![](final_files/figure-gfm/unnamed-chunk-63-2.png)<!-- -->
 
 # Вакцинация
 

@@ -471,7 +471,7 @@ for (i in 1:length(df$Хр.заб.3)) {
 ```
 
 
-# ВИЧ
+# HIV
 
 
 
@@ -492,7 +492,7 @@ autoplot(km_fit)
 ```
 
 
-### ВИЧ GLM
+
 
 ```{r}
 data_unique <- df %>% 
@@ -519,6 +519,32 @@ data_nas <- data_unique
 ```{r}
 data_nas$ВИЧ.инфекция <- ifelse(data_nas$ВИЧ.инфекция == "отрицает", '0', '1') %>% as.factor()
 
+dataHIV <-data
+dataHIV[dataHIV == ''] <- NA 
+dataHIV <- dataHIV %>% filter(is.na(ВИЧ.инфекция) == FALSE)
+dataHIV$ВИЧ.инфекция <- ifelse(dataHIV$ВИЧ.инфекция == "отрицает", '0', '1') %>% as.factor()
+
+```
+```{r}
+dataDH <- dataHIV %>% dplyr::select(where(is.factor)) %>% dplyr::select(!contains(c('Record.ID', 'Дата', "Причины", 'Время', 'Лечение',  "Complete", "What.", "Do.you.eat.any.of.the.", "Where.", "How.do.you", "Do.you.", "Services", "С.какого", "In.the.past.year.","Communicable.Languages.", "Check.if.this.person.", "Have.you.")))%>%
+  dplyr::select_if(~!(all(is.na(.)) | all(. == ""))) %>% filter(ВИЧ.инфекция == "1")
+
+
+
+#name <- colnames(dataDH)[1]
+#tab2 <- fct_count(dataDH[,1]) %>% add_column(`Переменная` = name)
+#for (i in 2:length(colnames(dataDH))) {
+#  name <- colnames(dataDH)[i]
+#  tab1 <- fct_count(dataDH[,i]) %>% add_column(`Переменная` = name)
+#  tab2 <- tab1 %>% bind_rows(tab2)
+#}
+
+#tab2 %>%
+#  dplyr::select(`Переменная`, `Значение` = `f`, `Уникальные сочетания` = `n`) %>%
+#  group_by(`Переменная`) %>%
+#  flextable()  %>%
+#  theme_box() %>%
+#  merge_v(c("Переменная")) 
 ```
 
          
@@ -540,7 +566,7 @@ data_nas$Сифилис  <- ifelse(data_nas$Сифилис == "отрицает"
         
 
 
-### MODEL вич
+
 созд дф трен
 
 ```{r}
@@ -561,15 +587,16 @@ data_test <- create_train_test(dfT, 0.8, train = FALSE)%>% na.omit()
 
 
 logit <- glm(ВИЧ.инфекция ~  Анамнез.со.слов.по.ТБ  + Возраст  + Гражданство  + Полис.ОМС + Пол + Паспорт..любой. + Гепатит.С + Гепатит.В, data = data_train, family = "binomial") %>% step(trace = FALSE)
-logit %>% broom::tidy(exponentiate = TRUE, conf.int = TRUE) %>% flextable()
-
+logit %>% broom::tidy(exponentiate = TRUE, conf.int = TRUE) %>% data.frame() %>% flextable()  %>% theme_box()
 
 ```
 
 
 
 
-### MODEL гепатит С
+
+
+# Hepatitis C
 созд дф трен
 
 ```{r}
@@ -591,9 +618,14 @@ data_test <- create_train_test(dfT, 0.8, train = FALSE)%>% na.omit()
 
 
 logit <- glm(Гепатит.С ~  Анамнез.со.слов.по.ТБ  + Возраст  + Гражданство  + Полис.ОМС + Пол + Паспорт..любой. + ВИЧ.инфекция +  Гепатит.В, data = data_train, family = "binomial") %>% step(trace = FALSE)
-logit %>% broom::tidy(exponentiate = TRUE, conf.int = TRUE)%>% flextable()
+l <- logit %>% broom::tidy(exponentiate = TRUE, conf.int = TRUE)%>% flextable() %>% theme_box()
 
 
+```
+
+
+```{r}
+l
 ```
 
 
@@ -603,9 +635,7 @@ logit %>% broom::tidy(exponentiate = TRUE, conf.int = TRUE)%>% flextable()
 
 
 
-
-
-----------------КРАМЕРА
+# Cramer`s V
 
 To search for indicators on which the call to the emergency medical services to the patient depends, we used Cramér's V for nominal variables. Regression analysis was unavailable due to lack of data.  
 To calculate the strength of association, we built a table, the values of which were then divided into three categories: weak, moderate and strong connection. No strong association between the variables was found. A moderate association was observed between hospitalization and the following variables: complaints, edema (anasarca), vomiting (uncontrollable), SpO2 saturation.
@@ -636,7 +666,7 @@ tabSMP$Результат <- ifelse(tabSMP$Значение < 0.2, 'слабая
 tabSMP$Результат <- ifelse(tabSMP$Значение > 0.4, 'сильная связь', tabSMP$Результат)
 
 tabSMP <- tabSMP %>% filter(Значение < 0.9)
-tabSMP
+
 # tabSMP <- tabSMP %>% filter(`Переменная` != 'Живот')
 ```
 
@@ -906,7 +936,7 @@ tabl <- data %>% filter(Место.приема == 'АМ Тухачевског�
                 Место.приема == 'МС' |
                 Место.приема == 'НП' ) %>% filter(Period > 540 )%>% droplevels() %>% select(`Место.приема`, `time_group`, `Period`) 
 
-tabl %>% dplyr::select(!`Period`) %>% table() %>% as.data.frame.matrix() %>% rownames_to_column("Значения")
+tabl %>% dplyr::select(!`Period`) %>% table() %>% as.data.frame.matrix() %>% rownames_to_column("Значения") %>% flextable()  %>% theme_box() 
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7") 
 
 #ggplot(data %>% filter(Место.приема == 'АМ Тухачевского'| 
