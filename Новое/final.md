@@ -69,6 +69,8 @@ literature data (Mohsen A. et al., 2002).
 
 ![](final_files/figure-gfm/HIV.png)<!-- -->
 
+The HIV patients are divided into two groups - those who are on the dispensary registry and those who confirmed the disease on the patient's word. This plot shows that patients who are on the dispensary registry take therapy more often than other. 
+
 ![](final_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 
