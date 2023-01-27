@@ -32,11 +32,14 @@ other variables
 # Methods and Approaches
 Statistical analysis was performed using R package (version 4.2 or higher) with specialized software Rstudio.
 Standard parametric criteria were used to compare quantitative data: Student's t-test for dependent/independent samples, analysis of variance (ANOVA) for repeated measures. Frequencies between groups were compared using Pearson's χ2 test or Fisher's exact test.
-If any of the baseline data revealed significant noncomparability of the study groups (statistically and clinically significant differences in demographic and other baseline data between the groups), we additionally performed analysis using multivariate statistics (linear or logistic regression depending on the type of parameter under study). In describing all estimated values, both p-values and point estimates with corresponding 95% confidence intervals are presented. 
+If any of the baseline data revealed significant noncomparability of the study groups (statistically and clinically significant differences in demographic and other baseline data between the groups), we additionally performed analysis using multivariate statistics (linear or logistic regression depending on the type of parameter under study). 
+
+In describing all estimated values, both p-values and point estimates with corresponding 95% confidence intervals are presented. 
 To perform a one-factor analysis of variance, we tested the groups for normality of the distribution. If the analysis of variance showed statistically significant differences between the groups, the TukeyHSD test was performed. 
 In case of normality violation the Kruskal-Wallis test was performed. Dunn's test was conducted to determine the difference between the groups. 
 The strength of the relationship between the two nominal variables was assessed using Cramer's criterion (Cramer's V).
 
+Regression analysis was performed using lm and glm functions. 
 The data were visualized using ggplot, plotly package. 
 
 # Descriptive statistics and a universal portrait of the homeless person
