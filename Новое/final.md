@@ -1,4 +1,4 @@
-конечный
+Statistical analysis of the Charity hospital database
 ================
 Authors: 
 I. Maslova
