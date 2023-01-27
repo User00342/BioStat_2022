@@ -72,7 +72,7 @@ We conducted an analysis of HIV-infected people. Among all patients included in 
 
 # Hepatitis C
 
-    A similar regression analysis was carried out to search for associations with Hepatitis C. It was found that every year the chance of infection with hepatitis C decreases by 0.96 times, relative to the previous year. Gender in this case does not play a significant role, p-value>0.05. At the same time, the presence of HIV infection increases the chance to be infected by 3 times, and hepatitis B by 10 times.
+ A similar regression analysis was carried out to search for associations with Hepatitis C. It was found that every year the chance of infection with hepatitis C decreases by 0.96 times, relative to the previous year. Gender in this case does not play a significant role, p-value>0.05. At the same time, the presence of HIV infection increases the chance to be infected by 3 times, and hepatitis B by 10 times.
 # Cramer\`s V
 
 To search for indicators on which the call to the emergency medical
