@@ -45,11 +45,9 @@ The mode for each of the categories was equal to one (most often, patients for a
 
 ![](final_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
-## Типовой портрет бездомного
+## A universal portrait of the homeless person
 
-Одна из задач нашего проекта - составление типового портрета бездомного. Проведенный анализ показал следующие результаты:
-Большинство людей без определенного места жительства, обратившиеся в АНО «Благотворительная больница», мужского пола, с Российским гражданством,  имеют при себе базовый набор документов (Паспорт, СНИЛС, полис ОМС), имеют постоянную регистрацию или не имеют ее вовсе. У большинства пациентов на первом приеме согласие на обработку персональных данных заполнено не было.  Большинство пациентов не имеют социально значимых заболеваний, аллергии, но имеют вредные привычки (никотин + алкоголь). Из заболеваний наиболее часто встречаются болезни кожи и подкожной клетчатки , Болезни костно-мышечной системы и соединительной ткани, Болезни органов дыхания, Болезни органов пищеварения и  Болезни системы кровообращения. 
-Пациенты по большей части не состоят в браке, примерно поровну оказалось пациентов, которые были/не были в местах лишения свободы. 
+One of the objectives of our project is to draw up a universal portrait of a homeless person. The analysis carried out showed the following results: most people without a fixed place of residence who applied to ANO "Charity Hospital" are male, with Russian citizenship, have a basic set of documents (Passport, SNILS, compulsory medical insurance policy), have a permanent registration or do not have it at all. For the majority of patients, consent to the processing of personal data was not filled out at the first appointment. Most patients do not have socially significant diseases, allergies, but have bad habits (nicotine and alcohol addiction). Of the diseases, the most common are diseases of the skin and subcutaneous tissue, diseases of the musculoskeletal system and connective tissue, diseases of the respiratory system, diseases of the digestive system and diseases of the circulatory system. Patients are mostly unmarried. Approximately equally there were patients who were and were not in places of detention. 
 
 
 
